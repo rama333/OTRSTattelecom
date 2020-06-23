@@ -81,6 +81,15 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         }
     }
 
+    public void add(int i, List<Article> list) {
+
+        //Collections.reverse(list);
+
+        mMessageList.clear();
+        mMessageList.addAll(list);
+        notifyItemRangeChanged(i, list.size());
+    }
+
     private class SentMessageHolder extends RecyclerView.ViewHolder {
         TextView messageText, timeText;
 

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.otrstattelecom.R;
 import com.example.otrstattelecom.model.Ticket;
+import com.example.otrstattelecom.presenter.TaksViewPresenter;
 import com.example.otrstattelecom.utils.Pref;
 import com.example.otrstattelecom.view.adapters.MessageListAdapter;
 
@@ -28,18 +30,22 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ViewTask extends AppCompatActivity {
+public class ViewTask extends AppCompatActivity implements TaskView{
     @BindView(R.id.textViewState)
     TextView textViewState;
     @BindView(R.id.textViewText)
     TextView textViewText;
     @BindView(R.id.textViewImportance)
     TextView textViewImportance;
-
+    @BindView(R.id.button_chatbox_send)
+    Button button;
+    @BindView(R.id.edittext_chatbox)
+    EditText editText;
     @BindView(R.id.rv)
     RecyclerView recyclerView;
     private MessageListAdapter mMessageAdapter;
     Ticket ticket;
+    private TaksViewPresenter taksViewPresenter;
 
 
     @Override
@@ -47,6 +53,7 @@ public class ViewTask extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_task);
         ButterKnife.bind(this);
+        taksViewPresenter = new TaksViewPresenter(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -72,6 +79,14 @@ public class ViewTask extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mMessageAdapter);
 
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                taksViewPresenter.setMessage(editText.getText().toString(), ticket.getTicketID(), prefManager.getToken().getSessionID());
+            }
+        });
+
 }
 
     @Override
@@ -84,4 +99,16 @@ public class ViewTask extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onTaskSuccess(List<Ticket> tickets) {
+        mMessageAdapter.add(0, tickets.get(0).getArticleList());
+        Toast.makeText(getBaseContext(), "succes", Toast.LENGTH_LONG).show();
+
+    }
+
+    @Override
+    public void onTaskFailed(String error) {
+        Toast.makeText(getBaseContext(), error, Toast.LENGTH_LONG).show();
+
+    }
 }

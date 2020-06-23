@@ -1,5 +1,7 @@
 package com.example.otrstattelecom.model.api;
 
+import com.example.otrstattelecom.model.MessageDTO;
+import com.example.otrstattelecom.model.MessageModelRequest;
 import com.example.otrstattelecom.model.Request;
 import com.example.otrstattelecom.model.RequestData;
 import com.example.otrstattelecom.model.TicketIDs;
@@ -33,6 +35,10 @@ public interface ApiInterface {
 
     @POST("otrs/nph-genericinterface.pl/Webservice/to-otrs/GET_S")
     Call<TicketsModel> getTickets(@Body RequestData request
+    );
+
+    @POST("otrs/nph-genericinterface.pl/Webservice/to-otrs/UPD")
+    Call<MessageDTO> setMessage(@Body MessageModelRequest request
     );
 
 
