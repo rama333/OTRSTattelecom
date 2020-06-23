@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">OTRS Tattelecom</string>
+
+    <string-array name="items">
+        <item>Assigned to me</item>
+        <item>My Queues</item>
+        <item>Open</item>
+        <item>Closed</item>
+    </string-array>
+</resources>
