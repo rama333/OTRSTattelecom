@@ -31,10 +31,11 @@ public class Pref {
         return mInstance;
     }
 
-    public void setUserLogin(Token token) {
+    public void setUserLogin(String token, String userId) {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(KEY_TOKEN, token.getSessionID());
+        editor.putString(KEY_TOKEN, token);
+        editor.putString(EXTRA_USER, userId);
 
         editor.putBoolean(KEY_IS_LOGGED_IN,true);
         editor.apply();
@@ -51,6 +52,12 @@ public class Pref {
 
         );
     }
+
+    public String getUserId(){
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getString(EXTRA_USER, null);
+    }
+
     public void logout() {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

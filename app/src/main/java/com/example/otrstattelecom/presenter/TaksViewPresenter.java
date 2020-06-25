@@ -85,9 +85,8 @@ public class TaksViewPresenter {
                 taskView.onTaskFailed(t.getMessage().toString());
             }
         });
-
-
     }
+
 
 
 }

@@ -47,6 +47,7 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.ViewHolder
         holder.textViewState.setText(tickets.get(position).getState());
         holder.textViewText.setText(tickets.get(position).getTitle());
         holder.textViewDate.setText(tickets.get(position).getCreated());
+        holder.textViewLock.setText(tickets.get(position).getLock());
 
         holder.itemView.setOnClickListener(view -> {
             startActivity(tickets.get(position));
@@ -63,10 +64,12 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.ViewHolder
     public int getItemCount() {
         return tickets.size();
     }
+
     public void add(int i, List<Ticket> list) {
 
-        Collections.reverse(list);
+        //Collections.reverse(list);
 
+        tickets.clear();
         tickets.addAll(i, list);
         notifyItemRangeChanged(i, list.size());
     }
@@ -83,6 +86,8 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.ViewHolder
         TextView textViewName;
         @BindView(R.id.textViewDate)
         TextView textViewDate;
+        @BindView(R.id.textViewLock)
+        TextView textViewLock;
         @BindView(R.id.card_view)
         CardView cardView;
 

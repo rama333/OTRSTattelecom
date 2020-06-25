@@ -1,8 +1,12 @@
 package com.example.otrstattelecom.presenter;
 
-import com.example.otrstattelecom.model.Request;
+import com.example.otrstattelecom.model.MessageDTO;
+import com.example.otrstattelecom.model.RequestCloseTicketModel;
 import com.example.otrstattelecom.model.RequestData;
+import com.example.otrstattelecom.model.RequestLock;
+import com.example.otrstattelecom.model.RequestLockTicketModel;
 import com.example.otrstattelecom.model.TicketIDs;
+import com.example.otrstattelecom.model.RequestState;
 import com.example.otrstattelecom.model.TicketsModel;
 import com.example.otrstattelecom.model.api.ApiFactory;
 import com.example.otrstattelecom.model.api.ApiInterface;
@@ -63,6 +67,40 @@ public class GetTaskPresenter {
 
             @Override
             public void onFailure(Call<TicketsModel> call, Throwable t) {
+                taskView.onTaskFailed(t.getMessage().toString());
+            }
+        });
+    }
+
+    public void closeTask(String session, String idTicket){
+        Call<MessageDTO> call = apiInterface.closeTask(new RequestCloseTicketModel(session, idTicket, new RequestState("closed successful")));
+        call.enqueue(new Callback<MessageDTO>() {
+            @Override
+            public void onResponse(Call<MessageDTO> call, Response<MessageDTO> response) {
+                getTickets(session);
+            }
+
+            @Override
+            public void onFailure(Call<MessageDTO> call, Throwable t) {
+                taskView.onTaskFailed(t.getMessage().toString());
+            }
+        });
+    }
+
+    public void lockTask(String session, String idTicket, String lock){
+        if(lock.equals("lock"))
+            lock = "unlock";
+        else
+            lock = "lock";
+        Call<MessageDTO> call = apiInterface.lockTask(new RequestLockTicketModel(session, idTicket, new RequestLock(lock)));
+        call.enqueue(new Callback<MessageDTO>() {
+            @Override
+            public void onResponse(Call<MessageDTO> call, Response<MessageDTO> response) {
+                getTickets(session);
+            }
+
+            @Override
+            public void onFailure(Call<MessageDTO> call, Throwable t) {
                 taskView.onTaskFailed(t.getMessage().toString());
             }
         });

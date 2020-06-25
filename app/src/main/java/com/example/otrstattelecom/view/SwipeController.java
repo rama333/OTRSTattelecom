@@ -1,5 +1,6 @@
 package com.example.otrstattelecom.view;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -36,9 +37,11 @@ public class SwipeController extends ItemTouchHelper.Callback {
     private SwipeControllerActions buttonsActions = null;
 
     private static final float buttonWidth = 200;
+    private Context context;
 
-    public SwipeController(SwipeControllerActions buttonsActions) {
+    public SwipeController(SwipeControllerActions buttonsActions, Context context) {
         this.buttonsActions = buttonsActions;
+        this.context = context;
     }
 
     @Override
@@ -153,7 +156,7 @@ public class SwipeController extends ItemTouchHelper.Callback {
     }
 
     private void drawButtons(Canvas c, RecyclerView.ViewHolder viewHolder) {
-        float buttonWidthWithoutPadding = buttonWidth +50;
+        float buttonWidthWithoutPadding = buttonWidth +20;
         float corners = 1;
 
         View itemView = viewHolder.itemView;
@@ -161,14 +164,14 @@ public class SwipeController extends ItemTouchHelper.Callback {
 
 
         RectF leftButton = new RectF(itemView.getLeft()+10, itemView.getTop()+10, itemView.getLeft() + buttonWidthWithoutPadding, itemView.getBottom()-10);
-        p.setColor(R.color.swipeItem);
+        p.setColor(context.getResources().getColor(R.color.swipeItemLeft));
         c.drawRoundRect(leftButton, corners, corners, p);
         drawText("LOCK", c, leftButton, p);
 
         RectF rightButton = new RectF(itemView.getRight() - buttonWidthWithoutPadding, itemView.getTop()+10, itemView.getRight()-10, itemView.getBottom()-10);
-        p.setColor(Color.RED);
+        p.setColor(context.getResources().getColor(R.color.swipeItemRight));
         c.drawRoundRect(rightButton, corners, corners, p);
-        drawText("DELETE", c, rightButton, p);
+        drawText("Закрыть", c, rightButton, p);
 
         buttonInstance = null;
         if (buttonShowedState == ButtonsState.LEFT_VISIBLE) {

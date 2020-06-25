@@ -2,6 +2,7 @@ package com.example.otrstattelecom.view.adapters;
 
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.otrstattelecom.R;
 import com.example.otrstattelecom.model.Article;
+import com.example.otrstattelecom.utils.Pref;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +26,12 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
     private Context mContext;
     private List<Article> mMessageList;
+    private Pref pref;
 
     public MessageListAdapter(Context context, List<Article> messageList) {
         mContext = context;
         mMessageList = messageList;
+        pref = Pref.getInstance(context);
     }
 
     @Override
@@ -39,8 +43,11 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemViewType(int position) {
         Article message = (Article) mMessageList.get(position);
+        Log.d("TAG", message.getCreateBy());
+        Log.d("TAG", pref.getUserId());
+        Log.d("TAG", "---------------");
 
-        if (message.getFrom().isEmpty()) {
+        if (message.getCreateBy().equals(pref.getUserId())) {
             // If the current user is the sender of the message
             return VIEW_TYPE_MESSAGE_SENT;
         } else {

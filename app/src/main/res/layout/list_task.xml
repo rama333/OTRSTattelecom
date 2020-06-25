@@ -97,6 +97,17 @@
                 app2:layout_constraintStart_toStartOf="parent"
                 app2:layout_constraintTop_toTopOf="parent"
                 app2:srcCompat="@drawable/shape" />
+
+            <TextView
+                android:id="@+id/textViewLock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:text="TextView"
+                app2:layout_constraintEnd_toEndOf="parent"
+                app2:layout_constraintTop_toTopOf="parent" />
             >
         </androidx.constraintlayout.widget.ConstraintLayout>
 

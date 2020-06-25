@@ -45,6 +45,7 @@ import butterknife.ButterKnife;
 public class Tasks extends AppCompatActivity implements  GetTasksView {
     ProgressDialog progressDialog;
     GetTaskPresenter taskPresenter;
+    List<Ticket> list;
     @Nullable
     @BindView(R.id.rv)
     RecyclerView recyclerView;
@@ -91,10 +92,18 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
         SwipeController swipeController = new SwipeController(new SwipeControllerActions() {
             @Override
             public void onRightClicked(int position) {
-                onTaskFailed("right");
+                progressDialog.show();
+                taskPresenter.closeTask(prefManager.getToken().getSessionID(), list.get(position).getTicketID());
+                //onTaskFailed(String.valueOf(position));
 
             }
-        });
+
+            @Override
+            public void onLeftClicked(int position){
+                progressDialog.show();
+                taskPresenter.lockTask(prefManager.getToken().getSessionID(), list.get(position).getTicketID(), list.get(position).getLock());
+            }
+        }, this);
         ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
         itemTouchhelper.attachToRecyclerView(recyclerView);
 
@@ -117,7 +126,7 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
 
 
 
-        List<Ticket> list = new ArrayList<>();
+        list = new ArrayList<>();
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
 
@@ -126,9 +135,6 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
         tasksAdapter = new TicketAdapter(list, this);
 
         recyclerView.setAdapter(tasksAdapter);
-
-
-
 
     }
 

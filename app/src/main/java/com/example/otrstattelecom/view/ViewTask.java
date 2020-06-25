@@ -25,6 +25,7 @@ import com.example.otrstattelecom.utils.Pref;
 import com.example.otrstattelecom.view.adapters.MessageListAdapter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -79,6 +80,9 @@ public class ViewTask extends AppCompatActivity implements TaskView{
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mMessageAdapter);
 
+        onTaskFailed("start");
+        taksViewPresenter.getTasks(new ArrayList<String>(Arrays.asList(ticket.getTicketID())), prefManager.getToken().getSessionID());
+        onTaskFailed("finish");
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,6 +90,8 @@ public class ViewTask extends AppCompatActivity implements TaskView{
                 taksViewPresenter.setMessage(editText.getText().toString(), ticket.getTicketID(), prefManager.getToken().getSessionID());
             }
         });
+
+
 
 }
 
@@ -102,6 +108,8 @@ public class ViewTask extends AppCompatActivity implements TaskView{
     @Override
     public void onTaskSuccess(List<Ticket> tickets) {
         mMessageAdapter.add(0, tickets.get(0).getArticleList());
+        recyclerView.scrollToPosition(tickets.get(0).getArticleList().size()-1);
+        editText.setText("");
         Toast.makeText(getBaseContext(), "succes", Toast.LENGTH_LONG).show();
 
     }

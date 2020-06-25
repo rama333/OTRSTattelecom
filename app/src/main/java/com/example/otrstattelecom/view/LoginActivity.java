@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.otrstattelecom.R;
+import com.example.otrstattelecom.model.SessionData;
 import com.example.otrstattelecom.model.TicketIDs;
 import com.example.otrstattelecom.model.Token;
 import com.example.otrstattelecom.model.UserModel;
@@ -108,7 +109,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
     }
 
 
-    public void onLoginSuccess(Token token) {
+    public void onLoginSuccess(String token, String userID) {
         progressDialog.dismiss();
         _loginButton.setEnabled(true);
 
@@ -116,7 +117,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
         Intent intent = new Intent(this, Tasks.class);
         //intent.putIntegerArrayListExtra(Pref.EXTRA_USER, (ArrayList<Integer>) userModel.getList());
         Pref prefManager = Pref.getInstance(LoginActivity.this);
-        prefManager.setUserLogin(token);
+        prefManager.setUserLogin(token, userID);
         startActivity(intent);
         finish();
           //finish();
@@ -124,7 +125,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
 
     public void onLoginFailed(String error) {
         progressDialog.dismiss();
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), error, Toast.LENGTH_LONG).show();
 
         _loginButton.setEnabled(true);
     }
