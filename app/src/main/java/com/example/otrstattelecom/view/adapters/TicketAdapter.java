@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,6 +27,7 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.ViewHolder
 
     List<Ticket> tickets;
     Context context;
+    private int lastPosition = -1;
 
     public TicketAdapter(List<Ticket> tickets, Context context) {
         this.tickets = tickets;
@@ -48,10 +51,13 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.ViewHolder
         holder.textViewText.setText(tickets.get(position).getTitle());
         holder.textViewDate.setText(tickets.get(position).getCreated());
         holder.textViewLock.setText(tickets.get(position).getLock());
+        holder.textViewName.setText(tickets.get(position).getOwner());
 
         holder.itemView.setOnClickListener(view -> {
             startActivity(tickets.get(position));
         });
+
+        setAnimation(holder.itemView, position);
 
     }
 
@@ -73,6 +79,21 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.ViewHolder
         tickets.addAll(i, list);
         notifyItemRangeChanged(i, list.size());
     }
+
+
+
+
+    private void setAnimation(View viewToAnimate, int position)
+    {
+        // If the bound view wasn't previously displayed on screen, it's animated
+        if (position > lastPosition)
+        {
+            Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left);
+            viewToAnimate.startAnimation(animation);
+            lastPosition = position;
+        }
+    }
+
 
     public class ViewHolderTask extends RecyclerView.ViewHolder{
 

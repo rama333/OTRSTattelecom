@@ -1,5 +1,7 @@
 package com.example.otrstattelecom.presenter;
 
+import android.util.Log;
+
 import com.example.otrstattelecom.model.Request;
 import com.example.otrstattelecom.model.RequestData;
 import com.example.otrstattelecom.model.SessionData;
@@ -38,7 +40,7 @@ public class LoginPresenter {
 
                 if(response.code() == 200){
                     loginView.onLoginFailed("ok");
-                    getIdUser(response.body().getSessionID());
+                    getIdUser(response.body().getSessionID(), username, password);
                     }
                 else
                     loginView.onLoginFailed("error data");
@@ -51,7 +53,7 @@ public class LoginPresenter {
         });
     }
 
-    public void getIdUser(String session) {
+    public void getIdUser(String session, String login, String password) {
 
         Call<SessionData> call = apiInterface.getUserId(session);
 
@@ -62,12 +64,13 @@ public class LoginPresenter {
 
                 if(response.code() == 200) {
                     for (int i = 0; i < response.body().getSession().size(); i++) {
-                        if (response.body().getSession().get(i).getKey().equals("UserID"))
+                        if (response.body().getSession().get(i).getKey().equals("UserID")) {
                             userID = response.body().getSession().get(i).getValue();
                             break;
-
+                        }
                     }
-                    loginView.onLoginSuccess(session, userID);
+                    //Log.d("TAG", userID + "userid");
+                    loginView.onLoginSuccess(session, userID, login, password);
                     //loginView.onLoginSuccess(session, response.body());
                 }
                 else

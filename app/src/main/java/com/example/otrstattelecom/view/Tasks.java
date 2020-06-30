@@ -13,6 +13,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +23,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 
 import com.example.otrstattelecom.R;
@@ -32,6 +34,7 @@ import com.example.otrstattelecom.presenter.GetTaskPresenter;
 import com.example.otrstattelecom.utils.Pref;
 
 import com.example.otrstattelecom.view.adapters.TicketAdapter;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
@@ -49,8 +52,12 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
     @Nullable
     @BindView(R.id.rv)
     RecyclerView recyclerView;
-
+    @BindView(R.id.swiperefresh_items)
+    SwipeRefreshLayout mSwipeRefreshLayout;
     TicketAdapter tasksAdapter;
+    @BindView(R.id.bottom_navigation)
+    BottomNavigationView bottomNavigationView;
+    Pref prefManager;
 
 
     @Override
@@ -63,12 +70,16 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle("OTRS Tattelecom");
+        prefManager = Pref.getInstance(this);
 
-        taskPresenter = new GetTaskPresenter(this);
 
-        Pref prefManager = Pref.getInstance(Tasks.this);
+        taskPresenter = new GetTaskPresenter(this, prefManager);
+
+
 
         taskPresenter.getTickets(prefManager.getToken().getSessionID());
+
+       // onTaskFailed(prefManager.getToken().getSessionID());
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
        // setSupportActionBar(toolbar);
         progressDialog = new ProgressDialog(Tasks.this,
@@ -115,14 +126,14 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
         });
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), TaskAdd.class);
-                startActivity(intent);
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(getApplicationContext(), TaskAdd.class);
+//                startActivity(intent);
+//            }
+//        });
 
 
 
@@ -136,6 +147,40 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
 
         recyclerView.setAdapter(tasksAdapter);
 
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                taskPresenter.getTickets(prefManager.getToken().getSessionID());
+            }
+        });
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()){
+                    case R.id.item_1:
+                        break;
+                    case  R.id.item_2:
+                        break;
+                    case R.id.item_3:
+                        Logged();
+                        break;
+
+                }
+                return false;
+
+
+            }
+        });
+
+    }
+
+    private void Logged(){
+        prefManager.logout();
+        Intent intent = new Intent(this, LoginActivity.class);
+        //intent.putIntegerArrayListExtra(Pref.EXTRA_USER, (ArrayList<Integer>) userModel.getList());
+        startActivity(intent);
+        finish();
     }
 
 
@@ -177,6 +222,7 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
 
     public void onTaskSuccess(List<Ticket> tickets) {
         progressDialog.dismiss();
+        mSwipeRefreshLayout.setRefreshing(false);
         Log.d("TAG", tickets.get(0).getTitle());
 
         Toast.makeText(getBaseContext(), tickets.get(0).getTitle(), Toast.LENGTH_LONG).show();
@@ -196,6 +242,7 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
     }
 
     public void onTaskFailed(String error) {
+        mSwipeRefreshLayout.setRefreshing(false);
         progressDialog.dismiss();
         Toast.makeText(getBaseContext(), error, Toast.LENGTH_LONG).show();
 

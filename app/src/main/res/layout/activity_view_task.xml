@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:openDrawer="end">
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.MainActivity">
+
+
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -20,9 +28,9 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <LinearLayout xmlns:app2="http://schemas.android.com/apk/res-auto"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+
+
+    <LinearLayout
         android:id="@+id/frame"
         android:paddingTop="60dp"
         android:layout_width="match_parent"
@@ -32,12 +40,12 @@
             android:id="@+id/card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app2:cardCornerRadius="1dp"
-            app2:cardUseCompatPadding="true">
+            app:cardCornerRadius="1dp"
+            app:cardUseCompatPadding="true">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp">
+                android:layout_height="70dp">
 
 
                 <TextView
@@ -45,12 +53,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="TextView"
-                    android:textColor="@color/colorPrimary"
+                    android:padding="1dp"
+                    android:background="@color/colorPrimary"
+                    android:textColor="@color/colorWhite"
                     android:textSize="10sp"
-                    app2:layout_constraintEnd_toEndOf="parent"
-                    app2:layout_constraintHorizontal_bias="0.5"
-                    app2:layout_constraintStart_toStartOf="parent"
-                    app2:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/textViewImportance"
@@ -60,7 +70,7 @@
                     android:layout_marginLeft="10dp"
                     android:text="TextView"
                     android:textSize="10sp"
-                    app2:layout_constraintStart_toStartOf="@+id/imageView"
+                    app:layout_constraintStart_toStartOf="@+id/imageView"
                     tools:layout_editor_absoluteY="0dp" />
 
                 <TextView
@@ -69,10 +79,57 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:text="TextView"
-                    app2:layout_constraintBottom_toTopOf="@+id/constraintLayout"
-                    app2:layout_constraintStart_toStartOf="parent"
-                    app2:layout_constraintTop_toBottomOf="@+id/textViewImportance" />
+                    app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewImportance" />
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:background="@color/foneItem"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    tools:layout_editor_absoluteX="0dp">
+
+                    <TextView
+                        android:id="@+id/textViewName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TextView"
+                        android:textSize="10sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/textViewDate"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/textViewDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginLeft="4dp"
+
+                        android:text="TextView"
+                        android:textSize="10sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/textViewInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginRight="16dp"
+                        android:textSize="10sp"
+                        android:text="Detail information"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <ImageView
                     android:id="@+id/imageView"
@@ -81,11 +138,23 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="3dp"
-                    app2:layout_constraintStart_toStartOf="parent"
-                    app2:layout_constraintTop_toTopOf="parent"
-                    app2:srcCompat="@drawable/shape" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/shape" />
 
+                <TextView
+                    android:id="@+id/textViewLock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="10sp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
+                    android:text="TextView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+                >
             </androidx.constraintlayout.widget.ConstraintLayout>
+
         </androidx.cardview.widget.CardView>
 
 
@@ -93,21 +162,28 @@
     </LinearLayout>
 
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="140dp"
         >
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/swiperefresh_items"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="60dp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv"
-            android:layout_width="431dp"
+            android:layout_width="300dp"
             android:layout_height="match_parent"
-            android:layout_marginBottom="50dp"
+
             app:layout_constraintBottom_toTopOf="@+id/layout_chatbox"
             app:layout_constraintTop_toTopOf="parent" />
-
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
         <LinearLayout
             android:id="@+id/layout_chatbox"
             android:layout_width="match_parent"
@@ -148,3 +224,13 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header_main"
+        app:menu="@menu/activity_main_drawer" />
+
+</androidx.drawerlayout.widget.DrawerLayout>

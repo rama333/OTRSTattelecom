@@ -7,6 +7,6 @@ import com.example.otrstattelecom.model.Token;
 import com.example.otrstattelecom.model.UserModel;
 
 public interface LoginView {
-    void onLoginSuccess(String session, String userId);
+    void onLoginSuccess(String session, String userId, String login, String password);
     void onLoginFailed(String error);
 }

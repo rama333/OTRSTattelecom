@@ -109,7 +109,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
     }
 
 
-    public void onLoginSuccess(String token, String userID) {
+    public void onLoginSuccess(String token, String userID, String login, String password) {
         progressDialog.dismiss();
         _loginButton.setEnabled(true);
 
@@ -117,7 +117,8 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
         Intent intent = new Intent(this, Tasks.class);
         //intent.putIntegerArrayListExtra(Pref.EXTRA_USER, (ArrayList<Integer>) userModel.getList());
         Pref prefManager = Pref.getInstance(LoginActivity.this);
-        prefManager.setUserLogin(token, userID);
+        prefManager.setUserLogin(token, userID, login, password);
+        Log.d("TAG", token);
         startActivity(intent);
         finish();
           //finish();

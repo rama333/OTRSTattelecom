@@ -43,8 +43,8 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemViewType(int position) {
         Article message = (Article) mMessageList.get(position);
-        Log.d("TAG", message.getCreateBy());
-        Log.d("TAG", pref.getUserId());
+        Log.d("TAG", message.getCreateBy() + " 1");
+        Log.d("TAG", pref.getUserId() + " 2");
         Log.d("TAG", "---------------");
 
         if (message.getCreateBy().equals(pref.getUserId())) {
@@ -98,20 +98,25 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     }
 
     private class SentMessageHolder extends RecyclerView.ViewHolder {
-        TextView messageText, timeText;
+        TextView messageText, timeText, nameText;
+        ImageView profileImage;
+
 
         SentMessageHolder(View itemView) {
             super(itemView);
 
             messageText = (TextView) itemView.findViewById(R.id.text_message_body);
             timeText = (TextView) itemView.findViewById(R.id.text_message_time);
+            nameText = (TextView) itemView.findViewById(R.id.text_message_name);
         }
 
         void bind(Article message) {
             messageText.setText(message.getBody());
 
             // Format the stored timestamp into a readable String using method.
-            timeText.setText(message.getChangeBy());
+            timeText.setText(message.getChangeTime());
+
+            nameText.setText("ВЫ");
         }
     }
 
