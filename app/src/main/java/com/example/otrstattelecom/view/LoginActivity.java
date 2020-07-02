@@ -1,12 +1,18 @@
 package com.example.otrstattelecom.view;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,17 +46,50 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
     EditText _passwordText;
     @BindView(R.id.btn_login)
     Button _loginButton;
-    @BindView(R.id.link_signup)
-    TextView _signupLink;
+    @BindView(R.id.logo)
+    ImageView _imageviewLogo;
+    //@BindView(R.id.textViewCorp)
+    TextView _imageviewCorp;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        setTheme(R.style.AppThemeLogin);
         setContentView(R.layout.activity_login);
 
         ButterKnife.bind(this);
+
+//        RotateAnimation anim = new RotateAnimation(0.0f, 360.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+//
+//        anim.setInterpolator(new LinearInterpolator());
+//        anim.setRepeatCount(Animation.INFINITE);
+//        anim.setDuration(900);
+//
+//        _imageviewLogo.startAnimation(anim);
+
+        ObjectAnimator scaleDownX = ObjectAnimator.ofFloat(_imageviewLogo, View.ALPHA, 0, 1);
+        ObjectAnimator scaleDownY = ObjectAnimator.ofFloat(_imageviewLogo, View.ALPHA, 0, 1);
+        scaleDownX.setDuration(5000);
+        scaleDownY.setDuration(5000);
+
+        AnimatorSet scaleDown = new AnimatorSet();
+        scaleDown.play(scaleDownX).with(scaleDownY);
+
+        scaleDown.start();
+
+        ObjectAnimator scaleDownXC = ObjectAnimator.ofFloat(_imageviewCorp, View.ALPHA, 0, 1);
+        ObjectAnimator scaleDownYC = ObjectAnimator.ofFloat(_imageviewCorp, View.ALPHA, 0, 1);
+        scaleDownXC.setDuration(50000);
+        scaleDownYC.setDuration(50000);
+
+        AnimatorSet scaleDownC = new AnimatorSet();
+        scaleDown.play(scaleDownX).with(scaleDownY);
+
+       // scaleDownC.start();
+
+
 
         Pref prefManager = Pref.getInstance(LoginActivity.this);
 
@@ -74,15 +113,8 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
             }
         });
 
-        _signupLink.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View v) {
-                // Start the Signup activity
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivityForResult(intent, REQUEST_SIGNUP);
-            }
-        });
+
     }
 
     public void login() {

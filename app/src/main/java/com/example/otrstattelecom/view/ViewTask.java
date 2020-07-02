@@ -1,21 +1,20 @@
 package com.example.otrstattelecom.view;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
-import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -65,6 +64,8 @@ public class ViewTask extends AppCompatActivity implements TaskView{
     NavigationView navigationView;
     @BindView(R.id.textViewInfo)
     TextView textViewInfo;
+    ListView listViewH;
+    ListView listViewIn;
 
     private MessageListAdapter mMessageAdapter;
     Ticket ticket;
@@ -78,6 +79,15 @@ public class ViewTask extends AppCompatActivity implements TaskView{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_task);
         ButterKnife.bind(this);
+        View headerLayout = navigationView.getHeaderView(0);
+
+        listViewH = (ListView)  headerLayout.findViewById(R.id.listViewH);
+        listViewIn = (ListView) headerLayout.findViewById(R.id.listViewIn);
+
+
+
+
+
         taksViewPresenter = new TaksViewPresenter(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -144,6 +154,13 @@ public class ViewTask extends AppCompatActivity implements TaskView{
 
 
 
+
+
+
+
+
+
+
 }
 
     @Override
@@ -164,6 +181,38 @@ public class ViewTask extends AppCompatActivity implements TaskView{
             recyclerView.scrollToPosition(tickets.get(0).getArticleList().size() - 1);
             editText.setText("");
             Toast.makeText(getBaseContext(), "succes", Toast.LENGTH_LONG).show();
+
+            final String[] tempH = new String[]{"Number", "Type", "Age", "Created", "State", "Locked", "Queue", "Service", "Priority", "Customer",
+            "Owner", "SLA", "Update Time"};
+
+            final String[] temp = new String[]{
+                tickets.get(0).getTicketNumber(),
+                tickets.get(0).getType(),
+                tickets.get(0).getAge(),
+                tickets.get(0).getCreated(),
+                tickets.get(0).getState(),
+                tickets.get(0).getLock(),
+                tickets.get(0).getQueue(),
+                tickets.get(0).getService(),
+                tickets.get(0).getPriority(),
+                tickets.get(0).getCustomerUserID(),
+                tickets.get(0).getOwner(),
+                tickets.get(0).getSLAID(),
+                tickets.get(0).getEscalationUpdateTime()
+            };
+
+
+
+            //String[] arr = tickets.get(0).getArticleList().toArray(new String[ tickets.get(0).getArticleList().size()]);
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                    R.layout.list_item_info, temp);
+
+            ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this,
+                    R.layout.list_item_header, tempH);
+
+           listViewH.setAdapter(adapter);
+           listViewIn.setAdapter(adapter1);
         }
     }
 
