@@ -1,23 +1,22 @@
-package com.example.otrstattelecom.model;
+package com.example.otrstattelecom.model.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ErrorStatus {
-
+public class ErrorResponse {
     @SerializedName("ErrorCode")
     @Expose
-    String status;
+    ErrorStatus status;
 
-    public ErrorStatus(String status) {
+    public ErrorResponse(ErrorStatus status) {
         this.status = status;
     }
 
-    public String getStatus() {
+    public ErrorStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(ErrorStatus status) {
         this.status = status;
     }
 }

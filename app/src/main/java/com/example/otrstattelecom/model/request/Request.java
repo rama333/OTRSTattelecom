@@ -1,10 +1,8 @@
-package com.example.otrstattelecom.model;
+package com.example.otrstattelecom.model.request;
 
 import com.google.gson.annotations.SerializedName;
 
 public class Request {
-
-
     @SerializedName("Data")
     RequestData data;
 

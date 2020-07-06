@@ -1,10 +1,7 @@
 package com.example.otrstattelecom.view;
 
-import com.example.otrstattelecom.model.Ticket;
-import com.example.otrstattelecom.model.TicketIDs;
-import com.example.otrstattelecom.model.TicketsModel;
+import com.example.otrstattelecom.model.response.Ticket;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface GetTasksView {

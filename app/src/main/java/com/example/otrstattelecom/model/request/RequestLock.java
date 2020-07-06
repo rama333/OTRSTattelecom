@@ -1,4 +1,4 @@
-package com.example.otrstattelecom.model;
+package com.example.otrstattelecom.model.request;
 
 public class RequestLock {
     String Lock;

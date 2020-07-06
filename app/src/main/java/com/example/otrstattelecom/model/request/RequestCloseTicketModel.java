@@ -1,21 +1,20 @@
-package com.example.otrstattelecom.model;
+package com.example.otrstattelecom.model.request;
 
 import com.google.gson.annotations.SerializedName;
 
-public class RequestLockTicketModel {
+public class RequestCloseTicketModel {
     @SerializedName("SessionID")
     String SessionID;
     @SerializedName("TicketID")
     String  TicketID;
     @SerializedName("Ticket")
-    RequestLock requestLock;
+    RequestState requestState;
 
-    public RequestLockTicketModel(String sessionID, String ticketID, RequestLock requestLock) {
+    public RequestCloseTicketModel(String sessionID, String ticketID, RequestState requestState) {
         SessionID = sessionID;
         TicketID = ticketID;
-        this.requestLock = requestLock;
+        this.requestState = requestState;
     }
-
 
     public String getSessionID() {
         return SessionID;
@@ -33,11 +32,11 @@ public class RequestLockTicketModel {
         TicketID = ticketID;
     }
 
-    public RequestLock getRequestLock() {
-        return requestLock;
+    public RequestState getRequestState() {
+        return requestState;
     }
 
-    public void setRequestLock(RequestLock requestLock) {
-        this.requestLock = requestLock;
+    public void setRequestState(RequestState requestState) {
+        this.requestState = requestState;
     }
 }

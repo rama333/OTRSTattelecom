@@ -1,4 +1,4 @@
-package com.example.otrstattelecom.model;
+package com.example.otrstattelecom.model.dto;
 
 import java.io.Serializable;
 

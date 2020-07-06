@@ -12,13 +12,10 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.otrstattelecom.R;
-import com.example.otrstattelecom.model.Article;
+import com.example.otrstattelecom.model.dto.Article;
 import com.example.otrstattelecom.utils.Pref;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.internal.Utils;
 
 public class MessageListAdapter extends RecyclerView.Adapter {
     private static final int VIEW_TYPE_MESSAGE_SENT = 1;

@@ -1,5 +1,6 @@
-package com.example.otrstattelecom.model;
+package com.example.otrstattelecom.model.response;
 
+import com.example.otrstattelecom.model.dto.Article;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;

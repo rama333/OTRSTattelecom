@@ -2,7 +2,6 @@ package com.example.otrstattelecom.view.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,10 +16,9 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.otrstattelecom.R;
-import com.example.otrstattelecom.model.Ticket;
+import com.example.otrstattelecom.model.response.Ticket;
 import com.example.otrstattelecom.view.ViewTask;
 
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;

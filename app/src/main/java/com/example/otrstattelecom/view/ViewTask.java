@@ -1,7 +1,6 @@
 package com.example.otrstattelecom.view;
 
 import android.annotation.SuppressLint;
-import android.media.Image;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -23,8 +22,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.otrstattelecom.R;
-import com.example.otrstattelecom.model.Article;
-import com.example.otrstattelecom.model.Ticket;
+import com.example.otrstattelecom.model.dto.Article;
+import com.example.otrstattelecom.model.response.Ticket;
 import com.example.otrstattelecom.presenter.TaksViewPresenter;
 import com.example.otrstattelecom.utils.Pref;
 import com.example.otrstattelecom.view.adapters.MessageListAdapter;
@@ -77,7 +76,6 @@ public class ViewTask extends AppCompatActivity implements TaskView{
     private TaksViewPresenter taksViewPresenter;
     List<Article> articleList;
 
-
     @SuppressLint("WrongConstant")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,10 +87,6 @@ public class ViewTask extends AppCompatActivity implements TaskView{
 
         listViewH = (ListView)  headerLayout.findViewById(R.id.listViewH);
         listViewIn = (ListView) headerLayout.findViewById(R.id.listViewIn);
-
-
-
-
 
         taksViewPresenter = new TaksViewPresenter(this);
 
@@ -110,9 +104,6 @@ public class ViewTask extends AppCompatActivity implements TaskView{
                 drawer.openDrawer(Gravity.END);
             }
         });
-
-
-
 
         Pref prefManager = Pref.getInstance(ViewTask.this);
         if (getIntent().getSerializableExtra("TASK") != null) {
@@ -132,16 +123,9 @@ public class ViewTask extends AppCompatActivity implements TaskView{
                     break;
             }
 
-
-
-
             setTitle(ticket.getService());
 
             textViewImportance.setText(ticket.getPriority().split(" ")[1]);
-            textViewState.setText(ticket.getState());
-            textViewText.setText(ticket.getTitle());
-
-            textViewImportance.setText(ticket.getPriority());
             textViewState.setText(ticket.getState());
             textViewText.setText(ticket.getTitle());
             textViewDate.setText(ticket.getCreated());
@@ -151,46 +135,24 @@ public class ViewTask extends AppCompatActivity implements TaskView{
 
     }
 
-
         mMessageAdapter = new MessageListAdapter(this, articleList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mMessageAdapter);
 
-        onTaskFailed("start");
-        taksViewPresenter.getTasks(new ArrayList<String>(Arrays.asList(ticket.getTicketID())), prefManager.getToken().getSessionID());
-        onTaskFailed("finish");
+        taksViewPresenter.getTasks(new ArrayList<String>(Arrays.asList(ticket.getTicketID())), prefManager.getToken());
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                taksViewPresenter.setMessage(editText.getText().toString(), ticket.getTicketID(), prefManager.getToken().getSessionID());
-                position = true;
-            }
+        button.setOnClickListener(v -> {
+            taksViewPresenter.setMessage(editText.getText().toString(), ticket.getTicketID(), prefManager.getToken());
+            position = true;
         });
 
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                taksViewPresenter.getTasks(new ArrayList<String>(Arrays.asList(ticket.getTicketID())), prefManager.getToken().getSessionID());
-            }
-        });
-
-
-
-
-
-
-
-
-
-
+        mSwipeRefreshLayout.setOnRefreshListener(() -> taksViewPresenter.getTasks(new ArrayList<String>(Arrays.asList(ticket.getTicketID())), prefManager.getToken()));
 }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // handle arrow click here
         if (item.getItemId() == android.R.id.home) {
-            finish(); // close this activity and return to preview activity (if there is any)
+            finish();
         }
 
         return super.onOptionsItemSelected(item);
@@ -226,10 +188,6 @@ public class ViewTask extends AppCompatActivity implements TaskView{
                 tickets.get(0).getOwner(),
                 tickets.get(0).getEscalationUpdateTime()
             };
-
-
-
-            //String[] arr = tickets.get(0).getArticleList().toArray(new String[ tickets.get(0).getArticleList().size()]);
 
             ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                     R.layout.list_item_info, temp);

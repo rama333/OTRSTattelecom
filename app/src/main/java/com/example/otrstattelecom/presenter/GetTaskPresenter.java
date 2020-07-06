@@ -1,37 +1,26 @@
 package com.example.otrstattelecom.presenter;
 
-import android.widget.Toast;
-
-import com.example.otrstattelecom.model.ErrorResponse;
-import com.example.otrstattelecom.model.LoginModelPref;
-import com.example.otrstattelecom.model.MessageDTO;
-import com.example.otrstattelecom.model.RequestCloseTicketModel;
-import com.example.otrstattelecom.model.RequestData;
-import com.example.otrstattelecom.model.RequestLock;
-import com.example.otrstattelecom.model.RequestLockTicketModel;
-import com.example.otrstattelecom.model.RequestTicketIds;
-import com.example.otrstattelecom.model.TicketIDs;
-import com.example.otrstattelecom.model.RequestState;
-import com.example.otrstattelecom.model.TicketsModel;
-import com.example.otrstattelecom.model.Token;
+import com.example.otrstattelecom.model.response.Message;
+import com.example.otrstattelecom.model.request.RequestCloseTicketModel;
+import com.example.otrstattelecom.model.request.RequestData;
+import com.example.otrstattelecom.model.request.RequestLock;
+import com.example.otrstattelecom.model.request.RequestLockTicketModel;
+import com.example.otrstattelecom.model.request.RequestTicketIds;
+import com.example.otrstattelecom.model.response.TicketIDs;
+import com.example.otrstattelecom.model.request.RequestState;
+import com.example.otrstattelecom.model.response.TicketsModel;
+import com.example.otrstattelecom.model.response.Token;
 import com.example.otrstattelecom.model.api.ApiFactory;
 import com.example.otrstattelecom.model.api.ApiInterface;
-import com.example.otrstattelecom.utils.ErrorUtils;
 import com.example.otrstattelecom.utils.Pref;
 import com.example.otrstattelecom.utils.URLS;
 import com.example.otrstattelecom.view.GetTasksView;
 
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Converter;
 import retrofit2.Response;
 
 public class GetTaskPresenter {
@@ -46,24 +35,27 @@ public class GetTaskPresenter {
         this.pref = pref;
     }
 
-    public void autH(String login, String password){
+    public void autH(String login, String password, List<String> stateType){
      Call<Token> call =  apiInterface.requestLogin(pref.authenticationUser().getLogin(), pref.authenticationUser().getPassword());
 
         call.enqueue(new Callback<Token>() {
             @Override
             public void onResponse(Call<Token> call, Response<Token> response) {
 
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && response.body().getError() == null) {
                     pref.setUserLogin(response.body().getSessionID(), pref.getUserId(), login, password);
                     taskView.onTaskFailed("auth ok");
-                    taskView.onTaskFailed(pref.getToken().getSessionID());
+                    taskView.onTaskFailed(pref.getToken());
+
+                    getTickets(response.body().getSessionID(), stateType);
+
                 } else {
                     taskView.onTaskFailed("error auth");
                 }
             }
             @Override
             public void onFailure(Call<Token> call, Throwable t) {
-                taskView.onTaskFailed("error auth exp");
+                taskView.onTaskFailed("Ошибка auth");
             }
         });
 
@@ -77,24 +69,15 @@ public class GetTaskPresenter {
             @Override
             public void onResponse(Call<TicketIDs> call, Response<TicketIDs> response) {
 
+                if(response.body().getErrorStatus() != null && response.body().getErrorStatus().getStatus().equals("TicketSearch.AuthFail")) {
+                    taskView.onTaskFailed("auth");
+                    autH(pref.authenticationUser().getLogin(), pref.authenticationUser().getPassword(), stateType);
+                }
+
                 if(response.isSuccessful() && response.body().getList() != null)
                     getTasks(response.body().getList(), session);
-                else {
-                    try {
-                        if(response.body().getErrorStatus() != null && response.body().getErrorStatus().getStatus().equals("TicketSearch.AuthFail")) {
-                            taskView.onTaskFailed("auth");
-                            autH(pref.authenticationUser().getLogin(), pref.authenticationUser().getPassword());
-                        }
-                        else {
-                            taskView.onTaskFailed("No TASK");
-                        }
-
-                        //LoginModelPref loginModelPref = pref.authenticationUser();
-                    } catch (Exception e) {
-                        taskView.onTaskFailed(e.getMessage());
-                    }
-
-                }
+                else if (response.body().getErrorStatus() == null)
+                    taskView.onTaskFailed("Отсутсвуют таски");
 
             }
 
@@ -126,15 +109,15 @@ public class GetTaskPresenter {
     }
 
     public void closeTask(String session, String idTicket, List<String> stateType){
-        Call<MessageDTO> call = apiInterface.closeTask(new RequestCloseTicketModel(session, idTicket, new RequestState("closed successful")));
-        call.enqueue(new Callback<MessageDTO>() {
+        Call<Message> call = apiInterface.closeTask(new RequestCloseTicketModel(session, idTicket, new RequestState("closed successful")));
+        call.enqueue(new Callback<Message>() {
             @Override
-            public void onResponse(Call<MessageDTO> call, Response<MessageDTO> response) {
+            public void onResponse(Call<Message> call, Response<Message> response) {
                 getTickets(session, stateType);
             }
 
             @Override
-            public void onFailure(Call<MessageDTO> call, Throwable t) {
+            public void onFailure(Call<Message> call, Throwable t) {
                 taskView.onTaskFailed(t.getMessage().toString());
             }
         });
@@ -145,20 +128,17 @@ public class GetTaskPresenter {
             lock = "unlock";
         else
             lock = "lock";
-        Call<MessageDTO> call = apiInterface.lockTask(new RequestLockTicketModel(session, idTicket, new RequestLock(lock, pref.authenticationUser().getLogin())));
-        call.enqueue(new Callback<MessageDTO>() {
+        Call<Message> call = apiInterface.lockTask(new RequestLockTicketModel(session, idTicket, new RequestLock(lock, pref.authenticationUser().getLogin())));
+        call.enqueue(new Callback<Message>() {
             @Override
-            public void onResponse(Call<MessageDTO> call, Response<MessageDTO> response) {
+            public void onResponse(Call<Message> call, Response<Message> response) {
                 getTickets(session, stateType);
             }
 
             @Override
-            public void onFailure(Call<MessageDTO> call, Throwable t) {
+            public void onFailure(Call<Message> call, Throwable t) {
                 taskView.onTaskFailed(t.getMessage().toString());
             }
         });
     }
-
-
-
 }

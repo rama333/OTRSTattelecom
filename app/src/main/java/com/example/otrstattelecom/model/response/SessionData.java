@@ -1,4 +1,4 @@
-package com.example.otrstattelecom.model;
+package com.example.otrstattelecom.model.response;
 
 import com.google.gson.annotations.SerializedName;
 

@@ -1,5 +1,6 @@
-package com.example.otrstattelecom.model;
+package com.example.otrstattelecom.model.response;
 
+import com.example.otrstattelecom.model.response.ErrorStatus;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

@@ -1,13 +1,13 @@
-package com.example.otrstattelecom.model;
+package com.example.otrstattelecom.model.response;
 
-public class MessageDTO {
+public class Message {
 
     String ArticleID;
     String TicketNumber;
     String TicketID;
 
 
-    public MessageDTO(String articleID, String ticketNumber, String ticketID) {
+    public Message(String articleID, String ticketNumber, String ticketID) {
         ArticleID = articleID;
         TicketNumber = ticketNumber;
         TicketID = ticketID;

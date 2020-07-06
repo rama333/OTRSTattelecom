@@ -4,8 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import com.example.otrstattelecom.model.LoginModelPref;
-import com.example.otrstattelecom.model.Token;
+import com.example.otrstattelecom.model.dto.LoginModelPref;
 import com.example.otrstattelecom.view.LoginActivity;
 
 
@@ -51,12 +50,9 @@ public class Pref {
         return sharedPreferences.getBoolean(KEY_IS_LOGGED_IN, false);
     }
 
-    public Token getToken() {
+    public String getToken() {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
-        return new Token(
-                sharedPreferences.getString(KEY_TOKEN, null)
-
-        );
+        return sharedPreferences.getString(KEY_TOKEN, null);
     }
 
     public String getUserId(){

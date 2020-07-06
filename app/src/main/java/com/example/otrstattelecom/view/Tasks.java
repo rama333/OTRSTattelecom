@@ -11,16 +11,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,16 +24,12 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 
 import com.example.otrstattelecom.R;
-import com.example.otrstattelecom.model.Ticket;
-import com.example.otrstattelecom.model.TicketIDs;
-import com.example.otrstattelecom.model.TicketsModel;
+import com.example.otrstattelecom.model.response.Ticket;
 import com.example.otrstattelecom.presenter.GetTaskPresenter;
 import com.example.otrstattelecom.utils.Pref;
 
 import com.example.otrstattelecom.view.adapters.TicketAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
 
 
 import java.util.ArrayList;
@@ -69,22 +61,13 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
         ButterKnife.bind(this);
         stateType = new ArrayList<>();
 
-
-//          getSupportActionBar().setTitle("Заказы");
-//        ((AppCompatActivity)this).getSupportActionBar().setTitle("Your Title");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle("OTRS Tattelecom");
         prefManager = Pref.getInstance(this);
 
-
         taskPresenter = new GetTaskPresenter(this, prefManager);
 
-
-
-       // onTaskFailed(prefManager.getToken().getSessionID());
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-       // setSupportActionBar(toolbar);
         progressDialog = new ProgressDialog(Tasks.this,
                 R.style.Theme_AppCompat_Dialog);
         progressDialog.setIndeterminate(true);
@@ -92,15 +75,12 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
         progressDialog.show();
 
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
-// Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.items, android.R.layout.simple_spinner_item);
-// Specify the layout to use when the list of choices appears
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-// Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -108,29 +88,26 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
                                               public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                                                   switch (position){
                                                       case 0:
-                                                          Log.d("TAG", "start 0 ");
                                                           tasksAdapter.Clear();
                                                           stateType.clear();
                                                           stateType.add("open");
                                                           stateType.add("closed successful");
-                                                          taskPresenter.getTickets(prefManager.getToken().getSessionID(), stateType);
+                                                          taskPresenter.getTickets(prefManager.getToken(), stateType);
                                                           break;
 
                                                       case 1:
-                                                          Log.d("TAG", "start 2 ");
                                                           tasksAdapter.Clear();
                                                           stateType.clear();
                                                           stateType.add("open");
                                                           progressDialog.show();
-                                                          taskPresenter.getTickets(prefManager.getToken().getSessionID(), stateType);
+                                                          taskPresenter.getTickets(prefManager.getToken(), stateType);
                                                           break;
                                                       case 2:
-                                                          Log.d("TAG", "start 3 ");
                                                           tasksAdapter.Clear();
                                                           stateType.clear();
                                                           stateType.add("closed successful");
                                                           progressDialog.show();
-                                                          taskPresenter.getTickets(prefManager.getToken().getSessionID(), stateType);
+                                                          taskPresenter.getTickets(prefManager.getToken(), stateType);
                                                           break;
                                                   }
                                               }
@@ -146,15 +123,14 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
             @Override
             public void onRightClicked(int position) {
                 progressDialog.show();
-                taskPresenter.closeTask(prefManager.getToken().getSessionID(), list.get(position).getTicketID(), stateType);
-                //onTaskFailed(String.valueOf(position));
+                taskPresenter.closeTask(prefManager.getToken(), list.get(position).getTicketID(), stateType);
 
             }
 
             @Override
             public void onLeftClicked(int position){
                 progressDialog.show();
-                taskPresenter.lockTask(prefManager.getToken().getSessionID(), list.get(position).getTicketID(), list.get(position).getLock(), stateType);
+                taskPresenter.lockTask(prefManager.getToken(), list.get(position).getTicketID(), list.get(position).getLock(), stateType);
             }
         }, this);
         ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
@@ -178,7 +154,6 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
 //        });
 
 
-
         list = new ArrayList<>();
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -189,30 +164,20 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
 
         recyclerView.setAdapter(tasksAdapter);
 
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                taskPresenter.getTickets(prefManager.getToken().getSessionID(), stateType);
-            }
-        });
+        mSwipeRefreshLayout.setOnRefreshListener(() -> taskPresenter.getTickets(prefManager.getToken(), stateType));
 
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()){
-                    case R.id.item_1:
-                        break;
-                    case  R.id.item_2:
-                        break;
-                    case R.id.item_3:
-                        Logged();
-                        break;
-
-                }
-                return false;
-
+        bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
+            switch (menuItem.getItemId()){
+                case R.id.item_1:
+                    break;
+                case  R.id.item_2:
+                    break;
+                case R.id.item_3:
+                    Logged();
+                    break;
 
             }
+            return false;
         });
 
     }
@@ -220,7 +185,6 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
     private void Logged(){
         prefManager.logout();
         Intent intent = new Intent(this, LoginActivity.class);
-        //intent.putIntegerArrayListExtra(Pref.EXTRA_USER, (ArrayList<Integer>) userModel.getList());
         startActivity(intent);
         finish();
     }
@@ -229,32 +193,18 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
 
     @Override
     public void onBackPressed() {
-//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        if (drawer.isDrawerOpen(GravityCompat.START)) {
-//            drawer.closeDrawer(GravityCompat.START);
-//        } else {
-//            super.onBackPressed();
-//        }
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -265,21 +215,15 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
     public void onTaskSuccess(List<Ticket> tickets) {
         progressDialog.dismiss();
         mSwipeRefreshLayout.setRefreshing(false);
-        Log.d("TAG", tickets.get(0).getTitle());
-
         Toast.makeText(getBaseContext(), tickets.get(0).getTitle(), Toast.LENGTH_LONG).show();
 
         if(!tickets.isEmpty()) {
 
             tasksAdapter.add(0, tickets);
-
             Toast.makeText(getBaseContext(), "success" + tickets.get(0).getTitle(), Toast.LENGTH_LONG).show();
 
-        } else {
-
+        } else
             Toast.makeText(getBaseContext(), "У вас отсутсвуют таски", Toast.LENGTH_LONG).show();
-        }
-        //finish();
 
     }
 
@@ -287,7 +231,5 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
         mSwipeRefreshLayout.setRefreshing(false);
         progressDialog.dismiss();
         Toast.makeText(getBaseContext(), error, Toast.LENGTH_LONG).show();
-
-
     }
 }
