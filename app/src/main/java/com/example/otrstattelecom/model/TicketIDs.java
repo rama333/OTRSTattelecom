@@ -12,6 +12,7 @@ public class TicketIDs implements Serializable {
     @SerializedName("TicketID")
     @Expose
     List<String> list;
+
     @SerializedName("Error")
     @Expose
     ErrorStatus errorStatus;

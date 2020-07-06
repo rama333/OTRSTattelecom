@@ -1,6 +1,7 @@
 package com.example.otrstattelecom.view;
 
 import android.annotation.SuppressLint;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -64,8 +66,11 @@ public class ViewTask extends AppCompatActivity implements TaskView{
     NavigationView navigationView;
     @BindView(R.id.textViewInfo)
     TextView textViewInfo;
+    @BindView(R.id.imageView)
+    ImageView imageView;
     ListView listViewH;
     ListView listViewIn;
+    boolean position;
 
     private MessageListAdapter mMessageAdapter;
     Ticket ticket;
@@ -80,6 +85,7 @@ public class ViewTask extends AppCompatActivity implements TaskView{
         setContentView(R.layout.activity_view_task);
         ButterKnife.bind(this);
         View headerLayout = navigationView.getHeaderView(0);
+        position = false;
 
         listViewH = (ListView)  headerLayout.findViewById(R.id.listViewH);
         listViewIn = (ListView) headerLayout.findViewById(R.id.listViewIn);
@@ -112,12 +118,28 @@ public class ViewTask extends AppCompatActivity implements TaskView{
         if (getIntent().getSerializableExtra("TASK") != null) {
             ticket = (Ticket) getIntent().getSerializableExtra("TASK");
             Toast.makeText(getBaseContext(), String.valueOf(ticket.getAge()), Toast.LENGTH_LONG).show();
+
+            switch (Integer.valueOf(String.valueOf(ticket.getPriority().charAt(0)))){
+                case 1: imageView.setImageDrawable(getResources().getDrawable(R.drawable.shape_low));
+                    break;
+                case 2: imageView.setImageDrawable(getResources().getDrawable(R.drawable.shape_very_high));
+                    break;
+                case 3: imageView.setImageDrawable(getResources().getDrawable(R.drawable.shape_high));
+                    break;
+                case 4: imageView.setImageDrawable(getResources().getDrawable(R.drawable.shape_normal));
+                    break;
+                case 5: imageView.setImageDrawable(getResources().getDrawable(R.drawable.shape_very_low));
+                    break;
+            }
+
+
+
+
             setTitle(ticket.getService());
 
-            textViewImportance.setText(ticket.getPriority());
+            textViewImportance.setText(ticket.getPriority().split(" ")[1]);
             textViewState.setText(ticket.getState());
             textViewText.setText(ticket.getTitle());
-
 
             textViewImportance.setText(ticket.getPriority());
             textViewState.setText(ticket.getState());
@@ -142,6 +164,7 @@ public class ViewTask extends AppCompatActivity implements TaskView{
             @Override
             public void onClick(View v) {
                 taksViewPresenter.setMessage(editText.getText().toString(), ticket.getTicketID(), prefManager.getToken().getSessionID());
+                position = true;
             }
         });
 
@@ -178,12 +201,16 @@ public class ViewTask extends AppCompatActivity implements TaskView{
         mSwipeRefreshLayout.setRefreshing(false);
         if(tickets.get(0).getArticleList() != null) {
             mMessageAdapter.add(0, tickets.get(0).getArticleList());
-            recyclerView.scrollToPosition(tickets.get(0).getArticleList().size() - 1);
+
+            if(!position)
+                recyclerView.scrollToPosition(0);
+            else
+                recyclerView.scrollToPosition(tickets.get(0).getArticleList().size() - 1);
             editText.setText("");
             Toast.makeText(getBaseContext(), "succes", Toast.LENGTH_LONG).show();
 
             final String[] tempH = new String[]{"Number", "Type", "Age", "Created", "State", "Locked", "Queue", "Service", "Priority", "Customer",
-            "Owner", "SLA", "Update Time"};
+            "Owner", "Update"};
 
             final String[] temp = new String[]{
                 tickets.get(0).getTicketNumber(),
@@ -197,7 +224,6 @@ public class ViewTask extends AppCompatActivity implements TaskView{
                 tickets.get(0).getPriority(),
                 tickets.get(0).getCustomerUserID(),
                 tickets.get(0).getOwner(),
-                tickets.get(0).getSLAID(),
                 tickets.get(0).getEscalationUpdateTime()
             };
 

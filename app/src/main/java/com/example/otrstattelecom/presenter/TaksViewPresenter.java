@@ -29,27 +29,28 @@ public class TaksViewPresenter {
         this.taskView = taskView;
     }
 
-    public void getTickets(String session) {
-
-        Call<TicketIDs> call = apiInterface.getTicketIDs(session, "%%");
-
-
-        call.enqueue(new Callback<TicketIDs>() {
-            @Override
-            public void onResponse(Call<TicketIDs> call, Response<TicketIDs> response) {
-
-                if(response.code() == 200 && response.body().getList() != null)
-                    getTasks(response.body().getList(), session);
-                else
-                    taskView.onTaskFailed("error");
-            }
-
-            @Override
-            public void onFailure(Call<TicketIDs> call, Throwable t) {
-                taskView.onTaskFailed(t.getMessage().toString());
-            }
-        });
-    }
+//    public void getTickets(String session) {
+//
+//
+//        Call<TicketIDs> call = apiInterface.getTicketIDs(session, "%%", );
+//
+//
+//        call.enqueue(new Callback<TicketIDs>() {
+//            @Override
+//            public void onResponse(Call<TicketIDs> call, Response<TicketIDs> response) {
+//
+//                if(response.code() == 200 && response.body().getList() != null)
+//                    getTasks(response.body().getList(), session);
+//                else
+//                    taskView.onTaskFailed("error");
+//            }
+//
+//            @Override
+//            public void onFailure(Call<TicketIDs> call, Throwable t) {
+//                taskView.onTaskFailed(t.getMessage().toString());
+//            }
+//        });
+//    }
 
     public void getTasks(List<String> list, String session) {
 
@@ -72,7 +73,7 @@ public class TaksViewPresenter {
     }
 
     public void setMessage(String message, String idTicket, String session){
-        Call<MessageDTO> call = apiInterface.setMessage(new MessageModelRequest(session, idTicket,  new ArticleMessage(message,"utf8","testbn","text/plain")));
+        Call<MessageDTO> call = apiInterface.setMessage(new MessageModelRequest(session, idTicket,  new ArticleMessage(message,"utf8","testbn","text/plain", "0")));
 
         call.enqueue(new Callback<MessageDTO>() {
             @Override

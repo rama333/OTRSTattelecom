@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -58,6 +59,7 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNavigationView;
     Pref prefManager;
+    private List<String> stateType;
 
 
     @Override
@@ -65,6 +67,9 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        stateType = new ArrayList<>();
+
+
 //          getSupportActionBar().setTitle("Заказы");
 //        ((AppCompatActivity)this).getSupportActionBar().setTitle("Your Title");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -76,8 +81,6 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
         taskPresenter = new GetTaskPresenter(this, prefManager);
 
 
-
-        taskPresenter.getTickets(prefManager.getToken().getSessionID());
 
        // onTaskFailed(prefManager.getToken().getSessionID());
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -100,11 +103,50 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
 // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                              @Override
+                                              public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                                  switch (position){
+                                                      case 0:
+                                                          Log.d("TAG", "start 0 ");
+                                                          tasksAdapter.Clear();
+                                                          stateType.clear();
+                                                          stateType.add("open");
+                                                          stateType.add("closed successful");
+                                                          taskPresenter.getTickets(prefManager.getToken().getSessionID(), stateType);
+                                                          break;
+
+                                                      case 1:
+                                                          Log.d("TAG", "start 2 ");
+                                                          tasksAdapter.Clear();
+                                                          stateType.clear();
+                                                          stateType.add("open");
+                                                          progressDialog.show();
+                                                          taskPresenter.getTickets(prefManager.getToken().getSessionID(), stateType);
+                                                          break;
+                                                      case 2:
+                                                          Log.d("TAG", "start 3 ");
+                                                          tasksAdapter.Clear();
+                                                          stateType.clear();
+                                                          stateType.add("closed successful");
+                                                          progressDialog.show();
+                                                          taskPresenter.getTickets(prefManager.getToken().getSessionID(), stateType);
+                                                          break;
+                                                  }
+                                              }
+
+                                              @Override
+                                              public void onNothingSelected(AdapterView<?> parent) {
+
+                                              }
+                                          }
+        );
+
         SwipeController swipeController = new SwipeController(new SwipeControllerActions() {
             @Override
             public void onRightClicked(int position) {
                 progressDialog.show();
-                taskPresenter.closeTask(prefManager.getToken().getSessionID(), list.get(position).getTicketID());
+                taskPresenter.closeTask(prefManager.getToken().getSessionID(), list.get(position).getTicketID(), stateType);
                 //onTaskFailed(String.valueOf(position));
 
             }
@@ -112,7 +154,7 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
             @Override
             public void onLeftClicked(int position){
                 progressDialog.show();
-                taskPresenter.lockTask(prefManager.getToken().getSessionID(), list.get(position).getTicketID(), list.get(position).getLock());
+                taskPresenter.lockTask(prefManager.getToken().getSessionID(), list.get(position).getTicketID(), list.get(position).getLock(), stateType);
             }
         }, this);
         ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
@@ -150,7 +192,7 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                taskPresenter.getTickets(prefManager.getToken().getSessionID());
+                taskPresenter.getTickets(prefManager.getToken().getSessionID(), stateType);
             }
         });
 

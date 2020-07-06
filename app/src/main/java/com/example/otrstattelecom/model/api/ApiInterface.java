@@ -5,6 +5,7 @@ import com.example.otrstattelecom.model.MessageModelRequest;
 import com.example.otrstattelecom.model.RequestCloseTicketModel;
 import com.example.otrstattelecom.model.RequestData;
 import com.example.otrstattelecom.model.RequestLockTicketModel;
+import com.example.otrstattelecom.model.RequestTicketIds;
 import com.example.otrstattelecom.model.SessionData;
 import com.example.otrstattelecom.model.TicketIDs;
 import com.example.otrstattelecom.model.TicketsModel;
@@ -26,10 +27,9 @@ public interface ApiInterface {
                              @Query("Password") String password
     );
 
-    @GET("otrs/nph-genericinterface.pl/Webservice/to-otrs/search?")
-    Call<TicketIDs> getTicketIDs(@Query("SessionID") String session,
-                                 @Query("TicketNumber") String TicketNumber
-    );
+    @POST("otrs/nph-genericinterface.pl/Webservice/to-otrs/search")
+    Call<TicketIDs> getTicketIDs(@Body RequestTicketIds requestTicketIds
+                                 );
 
     @POST("otrs/nph-genericinterface.pl/Webservice/to-otrs/GET_S")
     Call<TicketsModel> getTickets(@Body RequestData request

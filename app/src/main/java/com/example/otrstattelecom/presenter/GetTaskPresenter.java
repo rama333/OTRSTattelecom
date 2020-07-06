@@ -9,6 +9,7 @@ import com.example.otrstattelecom.model.RequestCloseTicketModel;
 import com.example.otrstattelecom.model.RequestData;
 import com.example.otrstattelecom.model.RequestLock;
 import com.example.otrstattelecom.model.RequestLockTicketModel;
+import com.example.otrstattelecom.model.RequestTicketIds;
 import com.example.otrstattelecom.model.TicketIDs;
 import com.example.otrstattelecom.model.RequestState;
 import com.example.otrstattelecom.model.TicketsModel;
@@ -68,9 +69,9 @@ public class GetTaskPresenter {
 
     }
 
-    public void getTickets(String session) {
+    public void getTickets(String session, List<String> stateType) {
 
-        Call<TicketIDs> call = apiInterface.getTicketIDs(session, "%%");
+        Call<TicketIDs> call = apiInterface.getTicketIDs(new RequestTicketIds(session, "%%" , stateType));
 
         call.enqueue(new Callback<TicketIDs>() {
             @Override
@@ -80,11 +81,15 @@ public class GetTaskPresenter {
                     getTasks(response.body().getList(), session);
                 else {
                     try {
-                        //JSONObject jObjError = new JSONObject(response.message());
-                        if(response.body().getErrorStatus().getStatus().equals("TicketSearch.AuthFail"))
+                        if(response.body().getErrorStatus() != null && response.body().getErrorStatus().getStatus().equals("TicketSearch.AuthFail")) {
                             taskView.onTaskFailed("auth");
                             autH(pref.authenticationUser().getLogin(), pref.authenticationUser().getPassword());
-                            //LoginModelPref loginModelPref = pref.authenticationUser();
+                        }
+                        else {
+                            taskView.onTaskFailed("No TASK");
+                        }
+
+                        //LoginModelPref loginModelPref = pref.authenticationUser();
                     } catch (Exception e) {
                         taskView.onTaskFailed(e.getMessage());
                     }
@@ -120,12 +125,12 @@ public class GetTaskPresenter {
         });
     }
 
-    public void closeTask(String session, String idTicket){
+    public void closeTask(String session, String idTicket, List<String> stateType){
         Call<MessageDTO> call = apiInterface.closeTask(new RequestCloseTicketModel(session, idTicket, new RequestState("closed successful")));
         call.enqueue(new Callback<MessageDTO>() {
             @Override
             public void onResponse(Call<MessageDTO> call, Response<MessageDTO> response) {
-                getTickets(session);
+                getTickets(session, stateType);
             }
 
             @Override
@@ -135,16 +140,16 @@ public class GetTaskPresenter {
         });
     }
 
-    public void lockTask(String session, String idTicket, String lock){
+    public void lockTask(String session, String idTicket, String lock, List<String> stateType){
         if(lock.equals("lock"))
             lock = "unlock";
         else
             lock = "lock";
-        Call<MessageDTO> call = apiInterface.lockTask(new RequestLockTicketModel(session, idTicket, new RequestLock(lock)));
+        Call<MessageDTO> call = apiInterface.lockTask(new RequestLockTicketModel(session, idTicket, new RequestLock(lock, pref.authenticationUser().getLogin())));
         call.enqueue(new Callback<MessageDTO>() {
             @Override
             public void onResponse(Call<MessageDTO> call, Response<MessageDTO> response) {
-                getTickets(session);
+                getTickets(session, stateType);
             }
 
             @Override

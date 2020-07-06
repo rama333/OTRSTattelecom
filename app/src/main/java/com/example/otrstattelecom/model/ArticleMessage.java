@@ -5,13 +5,15 @@ public class ArticleMessage {
     String Charset;
     String Subject;
     String MimeType;
+    String TimeUnit;
 
 
-    public ArticleMessage(String body, String charset, String subject, String mimeType) {
+    public ArticleMessage(String body, String charset, String subject, String mimeType, String timeUnit) {
         Body = body;
         Charset = charset;
         Subject = subject;
         MimeType = mimeType;
+        TimeUnit = timeUnit;
     }
 
     public String getBody() {
@@ -44,5 +46,13 @@ public class ArticleMessage {
 
     public void setMimeType(String mimeType) {
         MimeType = mimeType;
+    }
+
+    public String getTimeUnit() {
+        return TimeUnit;
+    }
+
+    public void setTimeUnit(String timeUnit) {
+        TimeUnit = timeUnit;
     }
 }

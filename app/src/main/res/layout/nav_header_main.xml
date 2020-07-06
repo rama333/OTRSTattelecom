@@ -9,18 +9,19 @@
 
     <ListView
         android:id="@+id/listViewH"
-        android:layout_width="150dp"
-        android:layout_height="729dp"
+        android:layout_width="181dp"
+        android:layout_height="709dp"
+        android:layout_marginTop="50dp"
         android:divider="@null"
         android:dividerHeight="0dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.816"
+        app:layout_constraintHorizontal_bias="0.913"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
         android:id="@+id/listViewIn"
-
+        android:layout_marginTop="50dp"
         android:layout_width="150dp"
         android:layout_height="729dp"
         android:divider="@null"
