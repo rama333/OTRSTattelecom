@@ -72,9 +72,10 @@ public class ViewTask extends AppCompatActivity implements TaskView{
     boolean position;
 
     private MessageListAdapter mMessageAdapter;
-    Ticket ticket;
+    private Ticket ticket;
     private TaksViewPresenter taksViewPresenter;
-    List<Article> articleList;
+    private List<Article> articleList;
+    private Pref prefManager;
 
     @SuppressLint("WrongConstant")
     @Override
@@ -82,13 +83,14 @@ public class ViewTask extends AppCompatActivity implements TaskView{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_task);
         ButterKnife.bind(this);
+        prefManager = Pref.getInstance(ViewTask.this);
         View headerLayout = navigationView.getHeaderView(0);
         position = false;
 
         listViewH = (ListView)  headerLayout.findViewById(R.id.listViewH);
         listViewIn = (ListView) headerLayout.findViewById(R.id.listViewIn);
 
-        taksViewPresenter = new TaksViewPresenter(this);
+        taksViewPresenter = new TaksViewPresenter(this, prefManager);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -105,7 +107,7 @@ public class ViewTask extends AppCompatActivity implements TaskView{
             }
         });
 
-        Pref prefManager = Pref.getInstance(ViewTask.this);
+
         if (getIntent().getSerializableExtra("TASK") != null) {
             ticket = (Ticket) getIntent().getSerializableExtra("TASK");
             Toast.makeText(getBaseContext(), String.valueOf(ticket.getAge()), Toast.LENGTH_LONG).show();

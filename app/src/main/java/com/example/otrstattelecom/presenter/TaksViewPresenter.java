@@ -1,5 +1,7 @@
 package com.example.otrstattelecom.presenter;
 
+import android.net.Uri;
+
 import com.example.otrstattelecom.model.dto.ArticleMessage;
 import com.example.otrstattelecom.model.response.Message;
 import com.example.otrstattelecom.model.request.MessageModelRequest;
@@ -23,6 +25,7 @@ import retrofit2.Response;
 
 public class TaksViewPresenter {
     ApiInterface apiInterface = ApiFactory.getRetrofitInstance(URLS.getUrlRoot()).create(ApiInterface.class);
+
     TaskView taskView;
     Pref pref;
 
@@ -97,6 +100,8 @@ public class TaksViewPresenter {
             }
         });
     }
+
+
 
 
 

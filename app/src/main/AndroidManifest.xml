@@ -13,6 +13,28 @@
         android:networkSecurityConfig="@xml/network_sec"
         android:theme="@style/AppTheme.Launcher"
      >
+
+        <service android:name=".view.MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/logo" />
+        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id" />
+
+
         <meta-data
             android:name="com.google.android.actions"
             android:resource="@xml/actions" />
@@ -26,6 +48,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".view.Test" android:theme="@style/AppTheme"/>
         <activity android:name=".view.Tasks" android:theme="@style/AppTheme"/>
         <activity android:name=".view.ViewTask" android:theme="@style/AppTheme"/>
         <activity android:name=".view.TaskAdd" android:theme="@style/AppTheme"/>

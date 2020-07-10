@@ -1,5 +1,7 @@
 package com.example.otrstattelecom.presenter;
 
+import com.example.otrstattelecom.model.request.DynamicField;
+import com.example.otrstattelecom.model.request.RequestQueueEdit;
 import com.example.otrstattelecom.model.response.Message;
 import com.example.otrstattelecom.model.request.RequestCloseTicketModel;
 import com.example.otrstattelecom.model.request.RequestData;
@@ -12,6 +14,7 @@ import com.example.otrstattelecom.model.response.TicketsModel;
 import com.example.otrstattelecom.model.response.Token;
 import com.example.otrstattelecom.model.api.ApiFactory;
 import com.example.otrstattelecom.model.api.ApiInterface;
+import com.example.otrstattelecom.model.response.TokenPush;
 import com.example.otrstattelecom.utils.Pref;
 import com.example.otrstattelecom.utils.URLS;
 import com.example.otrstattelecom.view.GetTasksView;
@@ -25,6 +28,7 @@ import retrofit2.Response;
 
 public class GetTaskPresenter {
     ApiInterface apiInterface = ApiFactory.getRetrofitInstance(URLS.getUrlRoot()).create(ApiInterface.class);
+    ApiInterface apiInterfacePush = ApiFactory.getRetrofitInstancePush(URLS.getUrlPush()).create(ApiInterface.class);
     GetTasksView taskView;
     Pref pref;
 
@@ -35,7 +39,7 @@ public class GetTaskPresenter {
         this.pref = pref;
     }
 
-    public void autH(String login, String password, List<String> stateType){
+    public void autH(String login, String password, List<String> stateType, String ownerIDs){
      Call<Token> call =  apiInterface.requestLogin(pref.authenticationUser().getLogin(), pref.authenticationUser().getPassword());
 
         call.enqueue(new Callback<Token>() {
@@ -47,7 +51,7 @@ public class GetTaskPresenter {
                     taskView.onTaskFailed("auth ok");
                     taskView.onTaskFailed(pref.getToken());
 
-                    getTickets(response.body().getSessionID(), stateType);
+                    getTickets(response.body().getSessionID(), stateType, ownerIDs);
 
                 } else {
                     taskView.onTaskFailed("error auth");
@@ -61,9 +65,9 @@ public class GetTaskPresenter {
 
     }
 
-    public void getTickets(String session, List<String> stateType) {
+    public void getTickets(String session, List<String> stateType, String ownerIDs) {
 
-        Call<TicketIDs> call = apiInterface.getTicketIDs(new RequestTicketIds(session, "%%" , stateType));
+        Call<TicketIDs> call = apiInterface.getTicketIDs(new RequestTicketIds(session, "%%" , stateType, ownerIDs));
 
         call.enqueue(new Callback<TicketIDs>() {
             @Override
@@ -71,7 +75,7 @@ public class GetTaskPresenter {
 
                 if(response.body().getErrorStatus() != null && response.body().getErrorStatus().getStatus().equals("TicketSearch.AuthFail")) {
                     taskView.onTaskFailed("auth");
-                    autH(pref.authenticationUser().getLogin(), pref.authenticationUser().getPassword(), stateType);
+                    autH(pref.authenticationUser().getLogin(), pref.authenticationUser().getPassword(), stateType, ownerIDs);
                 }
 
                 if(response.isSuccessful() && response.body().getList() != null)
@@ -83,7 +87,7 @@ public class GetTaskPresenter {
 
             @Override
             public void onFailure(Call<TicketIDs> call, Throwable t) {
-                taskView.onTaskFailed(t.getMessage().toString());
+                taskView.onTaskFailed("Не удалось связаться с сервером");
             }
         });
     }
@@ -108,22 +112,23 @@ public class GetTaskPresenter {
         });
     }
 
-    public void closeTask(String session, String idTicket, List<String> stateType){
-        Call<Message> call = apiInterface.closeTask(new RequestCloseTicketModel(session, idTicket, new RequestState("closed successful")));
+    public void closeTask(String session, String idTicket, List<String> stateType, String ownerIDs){
+        Call<Message> call = apiInterface.closeTask(new RequestCloseTicketModel(session, idTicket,
+                new RequestQueueEdit(pref.authenticationUser().getLogin(), "МСПД инженеры"), new DynamicField("ProcessManagementActivityID", "Activity-6cfaafb7731bc447a807493d05c1a562")));
         call.enqueue(new Callback<Message>() {
             @Override
             public void onResponse(Call<Message> call, Response<Message> response) {
-                getTickets(session, stateType);
+                getTickets(session, stateType, ownerIDs );
             }
 
             @Override
             public void onFailure(Call<Message> call, Throwable t) {
-                taskView.onTaskFailed(t.getMessage().toString());
+                taskView.onTaskFailed("Не удалось связаться с сервером");
             }
         });
     }
 
-    public void lockTask(String session, String idTicket, String lock, List<String> stateType){
+    public void lockTask(String session, String idTicket, String lock, List<String> stateType, String ownerIDs){
         if(lock.equals("lock"))
             lock = "unlock";
         else
@@ -132,13 +137,33 @@ public class GetTaskPresenter {
         call.enqueue(new Callback<Message>() {
             @Override
             public void onResponse(Call<Message> call, Response<Message> response) {
-                getTickets(session, stateType);
+                getTickets(session, stateType, ownerIDs);
             }
 
             @Override
             public void onFailure(Call<Message> call, Throwable t) {
-                taskView.onTaskFailed(t.getMessage().toString());
+                taskView.onTaskFailed("Не удалось связаться с сервером");
             }
         });
+    }
+
+    public void setToken(String token, String userId){
+        Call<TokenPush> call = apiInterfacePush.setToken(token, userId);
+
+        call.enqueue(new Callback<TokenPush>() {
+            @Override
+            public void onResponse(Call<TokenPush> call, Response<TokenPush> response) {
+                taskView.onTaskFailed("succes token");
+            }
+
+            @Override
+            public void onFailure(Call<TokenPush> call, Throwable t) {
+                taskView.onTaskFailed(t.getMessage());
+
+            }
+        });
+
+
+
     }
 }

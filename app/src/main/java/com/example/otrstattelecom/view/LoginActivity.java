@@ -111,7 +111,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
         progressDialog.dismiss();
         _loginButton.setEnabled(true);
 
-        Intent intent = new Intent(this, Tasks.class);
+        Intent intent = new Intent(this, Test.class);
         Pref prefManager = Pref.getInstance(LoginActivity.this);
         prefManager.setUserLogin(token, userID, login, password);
         startActivity(intent);

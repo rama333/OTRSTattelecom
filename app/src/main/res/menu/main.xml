@@ -6,10 +6,6 @@
         android:orderInCategory="100"
         android:title="Настройки"
         app:showAsAction="never" />
-    <item
-        android:id="@+id/action_filtr"
-        android:icon="@android:drawable/ic_menu_sort_by_size"
-        android:title="Фильтр"
-        app:showAsAction="ifRoom" />
+
 
 </menu>

@@ -41,7 +41,7 @@ public class LoginPresenter {
 
             @Override
             public void onFailure(Call<Token> call, Throwable t) {
-                loginView.onLoginFailed("Ошибка: не удалось связаться с сервером");
+                loginView.onLoginFailed("Ошибка: не удалось связаться с сервером" + t.getMessage());
             }
         });
     }

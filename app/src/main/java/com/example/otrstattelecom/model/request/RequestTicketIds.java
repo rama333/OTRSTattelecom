@@ -12,14 +12,15 @@ public class RequestTicketIds {
     String TicketNumber;
     @SerializedName("States")
     List<String> StateType;
+    @SerializedName("OwnerIDs")
+    String OwnerIDs;
 
-
-    public RequestTicketIds(String sessionID, String ticketNumber, List<String> stateType) {
+    public RequestTicketIds(String sessionID, String ticketNumber, List<String> stateType, String ownerIDs) {
         SessionID = sessionID;
         TicketNumber = ticketNumber;
         StateType = stateType;
+        OwnerIDs = ownerIDs;
     }
-
 
     public String getSessionID() {
         return SessionID;
@@ -43,5 +44,13 @@ public class RequestTicketIds {
 
     public void setStateType(List<String> stateType) {
         StateType = stateType;
+    }
+
+    public String getOwnerIDs() {
+        return OwnerIDs;
+    }
+
+    public void setOwnerIDs(String ownerIDs) {
+        OwnerIDs = ownerIDs;
     }
 }

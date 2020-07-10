@@ -2,8 +2,12 @@
     <string name="app_name">OTRS Tattelecom</string>
 
     <string-array name="items">
-        <item>Assigned to me</item>
-        <item>Open</item>
-        <item>Closed</item>
+        <item>Доступные мне</item>
+        <item>Oткрытые</item>
+        <item>Закрытые</item>
     </string-array>
+
+    <string name="msg_token_fmt" translatable="false">InstanceID Token: %s</string>
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="fcm_message">Новая заявка</string>
 </resources>

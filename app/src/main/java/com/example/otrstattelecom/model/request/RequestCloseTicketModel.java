@@ -8,12 +8,15 @@ public class RequestCloseTicketModel {
     @SerializedName("TicketID")
     String  TicketID;
     @SerializedName("Ticket")
-    RequestState requestState;
+    RequestQueueEdit requestQueueEdit;
+    @SerializedName("DynamicField")
+    DynamicField dynamicField;
 
-    public RequestCloseTicketModel(String sessionID, String ticketID, RequestState requestState) {
+    public RequestCloseTicketModel(String sessionID, String ticketID, RequestQueueEdit requestQueueEdit, DynamicField dynamicField) {
         SessionID = sessionID;
         TicketID = ticketID;
-        this.requestState = requestState;
+        this.requestQueueEdit = requestQueueEdit;
+        this.dynamicField = dynamicField;
     }
 
     public String getSessionID() {
@@ -32,11 +35,19 @@ public class RequestCloseTicketModel {
         TicketID = ticketID;
     }
 
-    public RequestState getRequestState() {
-        return requestState;
+    public RequestQueueEdit getRequestQueueEdit() {
+        return requestQueueEdit;
     }
 
-    public void setRequestState(RequestState requestState) {
-        this.requestState = requestState;
+    public void setRequestQueueEdit(RequestQueueEdit requestQueueEdit) {
+        this.requestQueueEdit = requestQueueEdit;
+    }
+
+    public DynamicField getDynamicField() {
+        return dynamicField;
+    }
+
+    public void setDynamicField(DynamicField dynamicField) {
+        this.dynamicField = dynamicField;
     }
 }

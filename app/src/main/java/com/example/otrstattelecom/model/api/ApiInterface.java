@@ -10,6 +10,7 @@ import com.example.otrstattelecom.model.response.SessionData;
 import com.example.otrstattelecom.model.response.TicketIDs;
 import com.example.otrstattelecom.model.response.TicketsModel;
 import com.example.otrstattelecom.model.response.Token;
+import com.example.otrstattelecom.model.response.TokenPush;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -23,6 +24,12 @@ public interface ApiInterface {
     @GET("otrs/nph-genericinterface.pl/Webservice/to-otrs/Screate?")
     Call<Token> requestLogin(@Query("UserLogin") String user,
                              @Query("Password") String password
+    );
+
+
+    @GET("api/new")
+    Call<TokenPush> setToken(@Query("token") String tokeb,
+                             @Query("idUser") String idUser
     );
 
     @POST("otrs/nph-genericinterface.pl/Webservice/to-otrs/search")

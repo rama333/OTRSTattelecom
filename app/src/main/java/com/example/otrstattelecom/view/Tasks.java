@@ -21,20 +21,19 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-
 import com.example.otrstattelecom.R;
 import com.example.otrstattelecom.model.response.Ticket;
 import com.example.otrstattelecom.presenter.GetTaskPresenter;
 import com.example.otrstattelecom.utils.Pref;
-
 import com.example.otrstattelecom.view.adapters.TicketAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -51,6 +50,9 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNavigationView;
     Pref prefManager;
+    String token;
+    String userId;
+    String itemState;
     private List<String> stateType;
 
 
@@ -65,13 +67,14 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
         setSupportActionBar(toolbar);
         setTitle("OTRS Tattelecom");
         prefManager = Pref.getInstance(this);
+        token = prefManager.getToken();
+        userId = prefManager.getUserId();
 
         taskPresenter = new GetTaskPresenter(this, prefManager);
 
-        progressDialog = new ProgressDialog(Tasks.this,
-                R.style.Theme_AppCompat_Dialog);
+        progressDialog = new ProgressDialog(Tasks.this);
         progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Tasks...");
+        progressDialog.setMessage("Загрузка...");
         progressDialog.show();
 
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
@@ -91,23 +94,29 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
                                                           tasksAdapter.Clear();
                                                           stateType.clear();
                                                           stateType.add("open");
-                                                          stateType.add("closed successful");
-                                                          taskPresenter.getTickets(prefManager.getToken(), stateType);
+                                                          stateType.add("new");
+                                                          progressDialog.show();
+                                                          taskPresenter.getTickets(token, stateType, userId);
+                                                          itemState = userId;
                                                           break;
 
                                                       case 1:
                                                           tasksAdapter.Clear();
                                                           stateType.clear();
                                                           stateType.add("open");
+                                                          stateType.add("new");
+
                                                           progressDialog.show();
-                                                          taskPresenter.getTickets(prefManager.getToken(), stateType);
+                                                          taskPresenter.getTickets(token, stateType, null);
+                                                          itemState = null;
                                                           break;
                                                       case 2:
                                                           tasksAdapter.Clear();
                                                           stateType.clear();
                                                           stateType.add("closed successful");
                                                           progressDialog.show();
-                                                          taskPresenter.getTickets(prefManager.getToken(), stateType);
+                                                          taskPresenter.getTickets(token, stateType, null);
+                                                          itemState = null;
                                                           break;
                                                   }
                                               }
@@ -123,14 +132,13 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
             @Override
             public void onRightClicked(int position) {
                 progressDialog.show();
-                taskPresenter.closeTask(prefManager.getToken(), list.get(position).getTicketID(), stateType);
-
+                taskPresenter.closeTask(token, list.get(position).getTicketID(), stateType, itemState);
             }
 
             @Override
             public void onLeftClicked(int position){
                 progressDialog.show();
-                taskPresenter.lockTask(prefManager.getToken(), list.get(position).getTicketID(), list.get(position).getLock(), stateType);
+                taskPresenter.lockTask(token, list.get(position).getTicketID(), list.get(position).getLock(), stateType, itemState);
             }
         }, this);
         ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
@@ -164,7 +172,7 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
 
         recyclerView.setAdapter(tasksAdapter);
 
-        mSwipeRefreshLayout.setOnRefreshListener(() -> taskPresenter.getTickets(prefManager.getToken(), stateType));
+        mSwipeRefreshLayout.setOnRefreshListener(() -> taskPresenter.getTickets(prefManager.getToken(), stateType, itemState));
 
         bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
             switch (menuItem.getItemId()){
@@ -179,6 +187,28 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
             }
             return false;
         });
+
+
+
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("TAG", "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+                        taskPresenter.setToken(token, prefManager.getUserId());
+
+                        // Log and toast
+                        String msg = getString(R.string.msg_token_fmt, token);
+                        Log.d("TAG", msg);
+                        //Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
 
     }
 
@@ -215,12 +245,12 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
     public void onTaskSuccess(List<Ticket> tickets) {
         progressDialog.dismiss();
         mSwipeRefreshLayout.setRefreshing(false);
-        Toast.makeText(getBaseContext(), tickets.get(0).getTitle(), Toast.LENGTH_LONG).show();
+        //Toast.makeText(getBaseContext(), tickets.get(0).getTitle(), Toast.LENGTH_LONG).show();
 
         if(!tickets.isEmpty()) {
 
             tasksAdapter.add(0, tickets);
-            Toast.makeText(getBaseContext(), "success" + tickets.get(0).getTitle(), Toast.LENGTH_LONG).show();
+            //Toast.makeText(getBaseContext(), "success" + tickets.get(0).getTitle(), Toast.LENGTH_LONG).show();
 
         } else
             Toast.makeText(getBaseContext(), "У вас отсутсвуют таски", Toast.LENGTH_LONG).show();
