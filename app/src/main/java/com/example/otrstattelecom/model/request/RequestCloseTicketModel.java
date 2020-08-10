@@ -2,6 +2,8 @@ package com.example.otrstattelecom.model.request;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class RequestCloseTicketModel {
     @SerializedName("SessionID")
     String SessionID;
@@ -10,9 +12,9 @@ public class RequestCloseTicketModel {
     @SerializedName("Ticket")
     RequestQueueEdit requestQueueEdit;
     @SerializedName("DynamicField")
-    DynamicField dynamicField;
+    List<DynamicField> dynamicField;
 
-    public RequestCloseTicketModel(String sessionID, String ticketID, RequestQueueEdit requestQueueEdit, DynamicField dynamicField) {
+    public RequestCloseTicketModel(String sessionID, String ticketID, RequestQueueEdit requestQueueEdit, List<DynamicField> dynamicField) {
         SessionID = sessionID;
         TicketID = ticketID;
         this.requestQueueEdit = requestQueueEdit;
@@ -43,11 +45,11 @@ public class RequestCloseTicketModel {
         this.requestQueueEdit = requestQueueEdit;
     }
 
-    public DynamicField getDynamicField() {
+    public List<DynamicField> getDynamicField() {
         return dynamicField;
     }
 
-    public void setDynamicField(DynamicField dynamicField) {
+    public void setDynamicField(List<DynamicField> dynamicField) {
         this.dynamicField = dynamicField;
     }
 }

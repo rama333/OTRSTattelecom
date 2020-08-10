@@ -1,21 +1,11 @@
 package com.example.otrstattelecom.model.request;
 
 public class RequestQueueEdit {
-    String Owner;
     String Queue;
 
-    public RequestQueueEdit(String owner, String queue) {
-        Owner = owner;
+
+    public RequestQueueEdit(String queue) {
         Queue = queue;
-    }
-
-
-    public String getOwner() {
-        return Owner;
-    }
-
-    public void setOwner(String owner) {
-        Owner = owner;
     }
 
     public String getQueue() {

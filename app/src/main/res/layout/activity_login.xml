@@ -135,7 +135,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:gravity="center|bottom"
-                android:text="Created by Tattelecom. 2020"
+                android:text="Created by Tattelecom ЕЦУиМС. 2020"
                 android:textSize="16dip" />
 
         </FrameLayout>

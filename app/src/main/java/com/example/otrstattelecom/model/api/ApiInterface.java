@@ -1,5 +1,6 @@
 package com.example.otrstattelecom.model.api;
 
+import com.example.otrstattelecom.model.request.RequestDataHistory;
 import com.example.otrstattelecom.model.response.Message;
 import com.example.otrstattelecom.model.request.MessageModelRequest;
 import com.example.otrstattelecom.model.request.RequestCloseTicketModel;
@@ -7,6 +8,7 @@ import com.example.otrstattelecom.model.request.RequestData;
 import com.example.otrstattelecom.model.request.RequestLockTicketModel;
 import com.example.otrstattelecom.model.request.RequestTicketIds;
 import com.example.otrstattelecom.model.response.SessionData;
+import com.example.otrstattelecom.model.response.TicketHistory;
 import com.example.otrstattelecom.model.response.TicketIDs;
 import com.example.otrstattelecom.model.response.TicketsModel;
 import com.example.otrstattelecom.model.response.Token;
@@ -52,6 +54,9 @@ public interface ApiInterface {
 
     @GET("otrs/nph-genericinterface.pl/Webservice/to-otrs/Sget")
     Call<SessionData> getUserId(@Query("SessionID") String session);
+
+    @POST("otrs/nph-genericinterface.pl/Webservice/to-otrs/history")
+    Call<TicketHistory> getHistory(@Body RequestDataHistory requestDataHistory);
 
 
 

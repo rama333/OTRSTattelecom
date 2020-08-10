@@ -1,6 +1,8 @@
 package com.example.otrstattelecom.presenter;
 
+import com.example.otrstattelecom.model.dto.History;
 import com.example.otrstattelecom.model.request.DynamicField;
+import com.example.otrstattelecom.model.request.RequestDataHistory;
 import com.example.otrstattelecom.model.request.RequestQueueEdit;
 import com.example.otrstattelecom.model.response.Message;
 import com.example.otrstattelecom.model.request.RequestCloseTicketModel;
@@ -8,6 +10,7 @@ import com.example.otrstattelecom.model.request.RequestData;
 import com.example.otrstattelecom.model.request.RequestLock;
 import com.example.otrstattelecom.model.request.RequestLockTicketModel;
 import com.example.otrstattelecom.model.request.RequestTicketIds;
+import com.example.otrstattelecom.model.response.TicketHistory;
 import com.example.otrstattelecom.model.response.TicketIDs;
 import com.example.otrstattelecom.model.request.RequestState;
 import com.example.otrstattelecom.model.response.TicketsModel;
@@ -113,8 +116,46 @@ public class GetTaskPresenter {
     }
 
     public void closeTask(String session, String idTicket, List<String> stateType, String ownerIDs){
+
+//         Call<TicketHistory> call = apiInterface.getHistory(new RequestDataHistory(session, idTicket));
+//
+//         call.enqueue(new Callback<TicketHistory>() {
+//             @Override
+//             public void onResponse(Call<TicketHistory> call, Response<TicketHistory> response) {
+//                 taskView.onTaskFailed("ok"+ response.body().getTicketHistoryModel().get(0).getHistoryList().get(0).getName());
+//
+//
+//                 List<History> histories = new ArrayList<>();
+//
+//                 for (int i = 0; i < response.body().getTicketHistoryModel().get(0).getHistoryList().size(); i++) {
+//
+//                     int a = response.body().getTicketHistoryModel().get(0).getHistoryList().get(0).getName().lastIndexOf("ProcessManagementActivityID");
+//
+//                     if(a > 0)
+//                         histories.add(response.body().getTicketHistoryModel().get(0).getHistoryList().get(0));
+//
+//
+//
+//                 }
+//
+//
+//             }
+//
+//             @Override
+//             public void onFailure(Call<TicketHistory> call, Throwable t) {
+//                 taskView.onTaskFailed("Не удалось связаться с сервером");
+//             }
+//         });
+
+        ;
+
+        List<DynamicField> dynamicFields = new ArrayList<>();
+        dynamicFields.add(new DynamicField("ProcessManagementActivityID", "Activity-a129464c9aad6faa0085dec291472790"));
+        dynamicFields.add(new DynamicField("ECUiMSPerehod", "Переход 3"));
+
+
         Call<Message> call = apiInterface.closeTask(new RequestCloseTicketModel(session, idTicket,
-                new RequestQueueEdit(pref.authenticationUser().getLogin(), "МСПД инженеры"), new DynamicField("ProcessManagementActivityID", "Activity-6cfaafb7731bc447a807493d05c1a562")));
+                new RequestQueueEdit("ЕЦУИМС тест"), dynamicFields));
         call.enqueue(new Callback<Message>() {
             @Override
             public void onResponse(Call<Message> call, Response<Message> response) {
