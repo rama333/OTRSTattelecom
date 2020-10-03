@@ -45,8 +45,14 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
-        super.onCreate(savedInstanceState);
         setTheme(R.style.AppThemeLogin);
+
+        super.onCreate(savedInstanceState);
+
+        //Toast.makeText(this, test, Toast.LENGTH_LONG).show();
+
+
+
         setContentView(R.layout.activity_login);
 
         ButterKnife.bind(this);
@@ -137,8 +143,8 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
             _emailText.setError(null);
         }
 
-        if (password.isEmpty() || password.length() < 4 || password.length() > 20) {
-            _passwordText.setError("Пароль должен содержать от 4 до 20 символов ");
+        if (password.isEmpty() || password.length() < 4 || password.length() > 30) {
+            _passwordText.setError("Пароль должен содержать от 4 до 30 символов ");
             valid = false;
         } else {
             _passwordText.setError(null);

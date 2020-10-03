@@ -125,7 +125,13 @@ public class ViewTask extends AppCompatActivity implements TaskView{
                     break;
             }
 
-            setTitle(ticket.getService());
+            String title = "Прочее/причина не установлена";
+
+            if(ticket.getService() != null)
+                title = ticket.getService();
+
+
+             setTitle(title);
 
             textViewImportance.setText(ticket.getPriority().split(" ")[1]);
             textViewState.setText(ticket.getState());
@@ -133,6 +139,7 @@ public class ViewTask extends AppCompatActivity implements TaskView{
             textViewDate.setText(ticket.getCreated());
             textViewLock.setText(ticket.getLock());
             textViewName.setText(ticket.getOwner());
+
             //textViewDate.setText(ticket.getCreated());
 
     }
@@ -174,7 +181,16 @@ public class ViewTask extends AppCompatActivity implements TaskView{
             Toast.makeText(getBaseContext(), "succes", Toast.LENGTH_LONG).show();
 
             final String[] tempH = new String[]{"Number", "Type", "Age", "Created", "State", "Locked", "Queue", "Service", "Priority", "Customer",
-            "Owner", "Update"};
+            "Owner"};
+            String customer = "otrs";
+            String service = "test";
+
+            if(tickets.get(0).getCustomerID() != null)
+                customer = tickets.get(0).getCustomerID();
+            if(tickets.get(0).getService() != null)
+                service = tickets.get(0).getService();
+
+
 
             final String[] temp = new String[]{
                 tickets.get(0).getTicketNumber(),
@@ -184,11 +200,10 @@ public class ViewTask extends AppCompatActivity implements TaskView{
                 tickets.get(0).getState(),
                 tickets.get(0).getLock(),
                 tickets.get(0).getQueue(),
-                tickets.get(0).getService(),
+                service,
                 tickets.get(0).getPriority(),
-                tickets.get(0).getCustomerUserID(),
-                tickets.get(0).getOwner(),
-                tickets.get(0).getEscalationUpdateTime()
+                customer,
+                tickets.get(0).getOwner()
             };
 
             ArrayAdapter<String> adapter = new ArrayAdapter<>(this,

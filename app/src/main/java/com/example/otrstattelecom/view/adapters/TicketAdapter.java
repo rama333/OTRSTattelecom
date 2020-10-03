@@ -95,16 +95,27 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.ViewHolder
     public void add(int i, List<Ticket> list) {
 
         //Collections.reverse(list);
+        notifyItemRangeRemoved(0, sizeList);
         sizeList = list.size();
         tickets.clear();
         tickets.addAll(i, list);
+
         notifyItemRangeChanged(i, list.size());
+
     }
 
     public void Clear(){
+//        notifyItemRangeRemoved(0, tickets.size());
+//        tickets.clear();
+//
+//        //notifyItemRangeChanged(0, sizeList);
+//        //notifyItemRangeChanged(0, 1);
+//        notifyDataSetChanged();
+
+        int size = tickets.size();
         tickets.clear();
-        //notifyItemRangeChanged(0, sizeList);
-        notifyDataSetChanged();
+        notifyItemRangeRemoved(0, size);
+
     }
 
 

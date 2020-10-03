@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">192.168.143.133</domain>
-        <domain includeSubdomains="true">192.168.114.145</domain>
+        <domain includeSubdomains="true">https://servicedesk.tattelecom.ru</domain>
+        <domain includeSubdomains="true">217.23.185.198</domain>
     </domain-config>
 </network-security-config>

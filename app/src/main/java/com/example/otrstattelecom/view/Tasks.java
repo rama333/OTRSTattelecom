@@ -239,27 +239,29 @@ public class Tasks extends AppCompatActivity implements  GetTasksView {
         return super.onOptionsItemSelected(item);
     }
 
-
-
-
     public void onTaskSuccess(List<Ticket> tickets) {
         progressDialog.dismiss();
         mSwipeRefreshLayout.setRefreshing(false);
         //Toast.makeText(getBaseContext(), tickets.get(0).getTitle(), Toast.LENGTH_LONG).show();
+
+        tasksAdapter.Clear();
 
         if(!tickets.isEmpty()) {
 
             tasksAdapter.add(0, tickets);
             //Toast.makeText(getBaseContext(), "success" + tickets.get(0).getTitle(), Toast.LENGTH_LONG).show();
 
-        } else
-            Toast.makeText(getBaseContext(), "У вас отсутсвуют таски", Toast.LENGTH_LONG).show();
+        } else{
 
+            Toast.makeText(getBaseContext(), "У вас отсутсвуют таски", Toast.LENGTH_LONG).show();
+            recyclerView.removeAllViewsInLayout();
+    }
     }
 
     public void onTaskFailed(String error) {
         mSwipeRefreshLayout.setRefreshing(false);
         progressDialog.dismiss();
+        tasksAdapter.Clear();
         Toast.makeText(getBaseContext(), error, Toast.LENGTH_LONG).show();
     }
 }

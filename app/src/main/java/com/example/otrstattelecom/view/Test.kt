@@ -18,11 +18,42 @@ class Test : AppIntro() {
         addSlide(AppIntroFragment.newInstance(
                 title = "Добро пожаловать в OTRS Tattelecom...",
                 imageDrawable = R.mipmap.slide2,
-                description = "Рекомендуем вам ознакомиться с базовым функционалам приложения"
+                description = "Рекомендуем вам ознакомиться с базовым функциями приложения"
         ))
         addSlide(AppIntroFragment.newInstance(
                 title = "Заявки",
-                description = "На данном экране мы момжем видеть все наши тикеты, которые нам доступны. Так же можно выбрать открытые/закрытые "
+                imageDrawable = R.mipmap.list,
+                description = "На данном экране отображены заявки которые закреплены за вами"
+        ))
+
+        addSlide(AppIntroFragment.newInstance(
+                title = "Меню",
+                imageDrawable = R.mipmap.menu,
+                description = "Здесь можно выбрать открытые/закрытые/доступные мне заявки  "
+        ))
+
+        addSlide(AppIntroFragment.newInstance(
+                title = "Принятие заявки на себя",
+                imageDrawable = R.mipmap.loc,
+                description = "Чтобы закрепить заявку за собой, смахните нужную заявку вправо и нажмите ВЗЯТЬ"
+        ))
+
+        addSlide(AppIntroFragment.newInstance(
+                title = "Закртытие заявки",
+                imageDrawable = R.mipmap.close,
+                description = "Чтобы закрыть заявку, смахните нужную заявку влево и нажмите ЗАКРЫТЬ"
+        ))
+
+        addSlide(AppIntroFragment.newInstance(
+                title = "Чат",
+                imageDrawable = R.mipmap.chat,
+                description = "При закрытие обязательно указывайте в чате что было сделано"
+        ))
+
+        addSlide(AppIntroFragment.newInstance(
+                title = "Детальная информация",
+                imageDrawable = R.mipmap.detail,
+                description = "Здесь можно получить детальную информацию"
         ))
     }
 
